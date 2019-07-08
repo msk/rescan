@@ -18,8 +18,23 @@ pub fn compile_multi(expressions: &[&str], ids: &[ReportId]) -> Result<(), Compi
 }
 
 fn compile_multi_int(expressions: &[&str], ids: &[ReportId]) -> Result<(), CompileError> {
+    if expressions.is_empty() {
+        return Err(CompileError::new(
+            ErrorKind::Other,
+            "Invalid parameter: expressions is empty",
+        ));
+    }
+
     for (i, (expression, &id)) in expressions.iter().zip(ids.iter()).enumerate() {
         add_expression(i as u32, expression, id)?;
     }
     Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    #[test]
+    fn compile_multi_int_empty_input() {
+        assert!(super::compile_multi_int(&[], &[]).is_err());
+    }
 }
