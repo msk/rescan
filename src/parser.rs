@@ -2,18 +2,22 @@ mod ascii_component_class;
 mod component;
 mod component_class;
 mod component_sequence;
+mod const_component_visitor;
 mod control_verbs;
 mod parser_util;
+mod shortcut_literal;
 
 use nom::{bytes::complete::take, IResult};
 
 use crate::parser::control_verbs::read_control_verbs;
 use crate::util::compile_error::CompileError;
 pub(in crate::parser) use ascii_component_class::AsciiComponentClass;
-pub(in crate::parser) use component::Component;
+pub(crate) use component::Component;
 pub(in crate::parser) use component_class::get_literal_component_class;
 pub(in crate::parser) use component_sequence::ComponentSequence;
+pub(in crate::parser) use const_component_visitor::ConstComponentVisitor;
 pub(crate) use parser_util::ParseMode;
+pub(crate) use shortcut_literal::shortcut_literal;
 
 fn add_literal(
     current_seq: &mut ComponentSequence,
@@ -25,7 +29,10 @@ fn add_literal(
     Ok(())
 }
 
-pub(crate) fn parse(ptr: &str, global_mode: &mut ParseMode) -> Result<(), CompileError> {
+pub(crate) fn parse(
+    ptr: &str,
+    global_mode: &mut ParseMode,
+) -> Result<Box<dyn Component>, CompileError> {
     let p = ptr;
 
     let mut p = read_control_verbs(p, 0, global_mode)?;
@@ -47,7 +54,7 @@ pub(crate) fn parse(ptr: &str, global_mode: &mut ParseMode) -> Result<(), Compil
             p = input
         }
     }
-    Ok(())
+    Ok(Box::new(root_seq))
 }
 
 fn take_any(input: &str) -> IResult<&str, char> {

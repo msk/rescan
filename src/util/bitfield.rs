@@ -4,6 +4,7 @@ use std::ops::{BitAnd, BitAndAssign, BitOr, BitOrAssign};
 type BlockType = u64;
 
 const BLOCK_SIZE: usize = size_of::<BlockType>() * 8;
+const ALL_ONES: BlockType = !0;
 
 #[derive(Default)]
 pub(crate) struct BitField256 {
@@ -19,6 +20,48 @@ impl BitField256 {
     /// Tests bit N.
     pub(crate) fn test(&self, n: u8) -> bool {
         (self.bits[BitField256::get_word(n)] & BitField256::mask_bit(n)) != 0
+    }
+
+    /// Returns number of bits set on.
+    pub(crate) fn count(&self) -> usize {
+        let mut sum = 0;
+        sum += self.bits[0].count_ones();
+        sum += self.bits[1].count_ones();
+        sum += self.bits[2].count_ones();
+        sum += self.bits[3].count_ones();
+        sum as usize
+    }
+
+    /// Returns first bit set.
+    pub(crate) fn find_first(&self) -> Option<u8> {
+        for (i, &bits) in self.bits.iter().enumerate() {
+            if bits != 0 {
+                return Some((i * BLOCK_SIZE) as u8 + bits.trailing_zeros() as u8);
+            }
+        }
+        None
+    }
+
+    /// Returns next bit set.
+    pub(crate) fn find_next(&self, last: u8) -> Option<u8> {
+        let last_i = BitField256::get_word(last);
+        let mut last_word = self.bits[last_i];
+
+        if last % BLOCK_SIZE as u8 != BLOCK_SIZE as u8 - 1 {
+            last_word &= ALL_ONES << ((last % BLOCK_SIZE as u8) + 1);
+
+            if last_word != 0 {
+                return Some((last_i * BLOCK_SIZE) as u8 + last_word.trailing_zeros() as u8);
+            }
+        }
+
+        for (i, &bits) in self.bits.iter().enumerate() {
+            if bits != 0 {
+                return Some(((last_i + i) * BLOCK_SIZE) as u8 + bits.trailing_zeros() as u8);
+            }
+        }
+
+        None
     }
 
     fn get_word(n: u8) -> usize {

@@ -1,9 +1,11 @@
 mod compiler;
+mod nfagraph;
 mod parser;
 mod ue2common;
 mod util;
 
 use compiler::add_expression;
+use nfagraph::Ng;
 pub use ue2common::ReportId;
 pub use util::compile_error::{CompileError, ErrorKind};
 
@@ -25,8 +27,10 @@ fn compile_multi_int(expressions: &[&str], ids: &[ReportId]) -> Result<(), Compi
         ));
     }
 
+    let mut ng = Ng::new();
+
     for (i, (expression, &id)) in expressions.iter().zip(ids.iter()).enumerate() {
-        add_expression(i as u32, expression, id)?;
+        add_expression(&mut ng, i as u32, expression, id)?;
     }
     Ok(())
 }

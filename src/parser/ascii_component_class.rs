@@ -1,10 +1,11 @@
+use crate::parser::shortcut_literal::NotLiteral;
 use crate::parser::*;
 use crate::util::{make_caseless, CharReach};
 
 /// Character classes and their mnemonics.
-pub(in crate::parser) struct AsciiComponentClass {
+pub(crate) struct AsciiComponentClass {
     mode: ParseMode,
-    cr: CharReach,
+    pub(in crate::parser) cr: CharReach,
 }
 
 impl AsciiComponentClass {
@@ -27,4 +28,9 @@ impl AsciiComponentClass {
     }
 }
 
-impl Component for AsciiComponentClass {}
+impl Component for AsciiComponentClass {
+    fn accept(&self, v: Box<&mut ConstComponentVisitor>) -> Result<(), NotLiteral> {
+        v.pre_ascii_component_class(self)?;
+        Ok(())
+    }
+}

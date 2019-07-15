@@ -1,1 +1,6 @@
-pub(in crate::parser) trait Component {}
+use crate::parser::shortcut_literal::NotLiteral;
+use crate::parser::ConstComponentVisitor;
+
+pub(crate) trait Component {
+    fn accept(&self, v: Box<&mut ConstComponentVisitor>) -> Result<(), NotLiteral>;
+}
