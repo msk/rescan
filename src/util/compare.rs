@@ -21,3 +21,8 @@ pub(crate) fn mytoupper(c: u8) -> u8 {
         c
     }
 }
+
+/// Returns `true` if this character hash different uppercase and lowercase forms.
+pub(crate) fn ourisalpha(c: u8) -> bool {
+    mytolower(c) != mytoupper(c)
+}
