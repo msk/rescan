@@ -1,3 +1,4 @@
+use crate::nfagraph::NgHolder;
 use crate::util::{mixed_sensitivity, CompileContext, Ue2Literal};
 
 pub(crate) struct Ng {
@@ -8,6 +9,8 @@ impl Ng {
     pub(crate) fn new(cc: CompileContext) -> Self {
         Ng { cc }
     }
+
+    pub(crate) fn add_graph(&self, _g: NgHolder) {}
 
     pub(crate) fn add_literal(&self, literal: &Ue2Literal) -> bool {
         debug_assert!(!literal.is_empty());

@@ -14,12 +14,17 @@ impl CharReach {
         cr
     }
 
-    // Sets bit N.
+    /// Sets all bits.
+    pub(crate) fn setall(&mut self) {
+        self.bits.setall();
+    }
+
+    /// Sets bit N.
     pub(crate) fn set(&mut self, c: u8) {
         self.bits.set(c);
     }
 
-    // Tests bit N.
+    /// Tests bit N.
     pub(crate) fn test(&self, c: u8) -> bool {
         self.bits.test(c)
     }
@@ -39,6 +44,11 @@ impl CharReach {
         self.bits.find_next(last)
     }
 
+    pub(crate) fn bitor(&mut self, rhs: &Self) {
+        self.bits.bitor(&rhs.bits);
+    }
+
+    /// Returns `true` if this represents an uppercase/lowercase pair.
     pub(crate) fn is_caseless_char(&self) -> bool {
         if self.count() != 2 {
             return false;

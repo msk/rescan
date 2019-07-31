@@ -12,6 +12,14 @@ pub(crate) struct BitField256 {
 }
 
 impl BitField256 {
+    /// Sets all bits.
+    pub(crate) fn setall(&mut self) {
+        self.bits[0] = ALL_ONES;
+        self.bits[1] = ALL_ONES;
+        self.bits[2] = ALL_ONES;
+        self.bits[3] = ALL_ONES;
+    }
+
     /// Sets bit N.
     pub(crate) fn set(&mut self, n: u8) {
         self.bits[BitField256::get_word(n)] |= BitField256::mask_bit(n);
@@ -62,6 +70,13 @@ impl BitField256 {
         }
 
         None
+    }
+
+    pub(crate) fn bitor(&mut self, rhs: &Self) {
+        self.bits[0] |= rhs.bits[0];
+        self.bits[1] |= rhs.bits[1];
+        self.bits[2] |= rhs.bits[2];
+        self.bits[3] |= rhs.bits[3];
     }
 
     fn get_word(n: u8) -> usize {

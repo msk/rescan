@@ -15,6 +15,11 @@ impl Component for ComponentSequence {
     fn accept(&self, _v: Box<&mut dyn ConstComponentVisitor>) -> Result<(), NotLiteral> {
         unimplemented!()
     }
+
+    fn note_positions(&mut self, bs: &mut GlushkovBuildState) {
+        let _pb = bs.get_builder().num_vertices();
+        unimplemented!()
+    }
 }
 
 impl Default for ComponentSequence {

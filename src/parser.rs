@@ -1,23 +1,31 @@
 mod ascii_component_class;
+mod build_state;
 mod component;
 mod component_class;
 mod component_sequence;
 mod const_component_visitor;
 mod control_verbs;
 mod parser_util;
+mod position;
+mod position_info;
 mod shortcut_literal;
 
-use nom::{bytes::complete::take, IResult};
-
-use crate::parser::control_verbs::read_control_verbs;
-use crate::util::compile_error::CompileError;
 pub(in crate::parser) use ascii_component_class::AsciiComponentClass;
+pub(crate) use build_state::make_glushkov_build_state;
+pub(in crate::parser) use build_state::GlushkovBuildState;
 pub(crate) use component::Component;
 pub(in crate::parser) use component_class::get_literal_component_class;
 pub(in crate::parser) use component_sequence::ComponentSequence;
 pub(in crate::parser) use const_component_visitor::ConstComponentVisitor;
 pub(crate) use parser_util::ParseMode;
+pub(crate) use position::{PosFlags, Position};
+pub(crate) use position_info::PositionInfo;
 pub(crate) use shortcut_literal::shortcut_literal;
+
+use nom::{bytes::complete::take, IResult};
+
+use crate::parser::control_verbs::read_control_verbs;
+use crate::util::compile_error::CompileError;
 
 fn add_literal(
     current_seq: &mut ComponentSequence,

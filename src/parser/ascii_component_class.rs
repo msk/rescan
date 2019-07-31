@@ -33,4 +33,11 @@ impl Component for AsciiComponentClass {
         v.pre_ascii_component_class(self)?;
         Ok(())
     }
+
+    fn note_positions(&mut self, bs: &mut GlushkovBuildState) {
+        let builder = bs.get_builder_mut();
+        let position = builder.make_position();
+
+        builder.add_char_reach(position, &self.cr);
+    }
 }

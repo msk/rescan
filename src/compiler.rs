@@ -1,5 +1,5 @@
-use crate::nfagraph::Ng;
-use crate::parser::{parse, shortcut_literal, Component, ParseMode};
+use crate::nfagraph::{make_nfa_builder, Ng, NgHolder};
+use crate::parser::{make_glushkov_build_state, parse, shortcut_literal, Component, ParseMode};
 use crate::ue2common::ReportId;
 use crate::{CompileError, ErrorKind};
 
@@ -14,6 +14,10 @@ impl ParsedExpression {
         let component = parse(expression, &mut mode)?;
         Ok(ParsedExpression { component })
     }
+}
+
+pub(crate) struct BuiltExpression {
+    pub(crate) g: NgHolder,
 }
 
 pub(crate) fn add_expression(
@@ -39,5 +43,17 @@ pub(crate) fn add_expression(
         return Ok(());
     }
 
+    let build_expr = build_graph(&pe);
+
+    ng.add_graph(build_expr.g);
+
     Ok(())
+}
+
+pub(crate) fn build_graph(_pe: &ParsedExpression) -> BuiltExpression {
+    let mut builder = make_nfa_builder();
+
+    let _bs = make_glushkov_build_state(&mut builder);
+
+    builder.get_graph()
 }
