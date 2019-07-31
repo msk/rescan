@@ -98,3 +98,17 @@ where
 pub(crate) fn mixed_sensitivity(s: &Ue2Literal) -> bool {
     mixed_sensitivity_in(s.iter())
 }
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    #[test]
+    fn string_eq() {
+        let empty1 = Ue2Literal::default();
+        let empty2 = Ue2Literal::default();
+
+        assert!(empty1 == empty2);
+        assert!(!(empty1 != empty2));
+    }
+}
