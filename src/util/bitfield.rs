@@ -110,3 +110,14 @@ impl BitOrAssign for BitField256 {
         self.bits[3] |= a.bits[3];
     }
 }
+
+#[cfg(test)]
+mod test {
+    use super::BitField256;
+
+    #[test]
+    fn bitfield_empty() {
+        let a = BitField256::default();
+        assert_eq!(a.count(), 0);
+    }
+}
