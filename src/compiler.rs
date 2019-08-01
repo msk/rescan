@@ -1,7 +1,7 @@
 use crate::nfagraph::Ng;
 use crate::parser::{parse, shortcut_literal, Component, ParseMode};
 use crate::ue2common::ReportId;
-use crate::util::compile_error::CompileError;
+use crate::{CompileError, ErrorKind};
 
 pub(crate) struct ParsedExpression {
     pub(crate) component: Box<dyn Component>,
@@ -22,6 +22,15 @@ pub(crate) fn add_expression(
     expression: &str,
     _id: ReportId,
 ) -> Result<(), CompileError> {
+    let cc = &ng.cc;
+
+    if expression.len() > cc.grey.limit_pattern_length {
+        return Err(CompileError::new(
+            ErrorKind::Other,
+            "Pattern length exceeds limit.",
+        ));
+    }
+
     let pe = ParsedExpression::new(index, expression)?;
 
     // If this expression is a literal, we can feed it directly to Rose rather
