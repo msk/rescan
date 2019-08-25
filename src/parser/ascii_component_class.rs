@@ -29,7 +29,7 @@ impl AsciiComponentClass {
 }
 
 impl Component for AsciiComponentClass {
-    fn accept(&self, v: Box<&mut ConstComponentVisitor>) -> Result<(), NotLiteral> {
+    fn accept(&self, v: Box<&mut dyn ConstComponentVisitor>) -> Result<(), NotLiteral> {
         v.pre_ascii_component_class(self)?;
         Ok(())
     }

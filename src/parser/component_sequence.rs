@@ -12,7 +12,7 @@ impl ComponentSequence {
 }
 
 impl Component for ComponentSequence {
-    fn accept(&self, _v: Box<&mut ConstComponentVisitor>) -> Result<(), NotLiteral> {
+    fn accept(&self, _v: Box<&mut dyn ConstComponentVisitor>) -> Result<(), NotLiteral> {
         unimplemented!()
     }
 }
