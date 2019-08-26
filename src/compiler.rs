@@ -1,5 +1,6 @@
 use crate::nfagraph::{make_nfa_builder, Ng, NgHolder};
 use crate::parser::{make_glushkov_build_state, parse, shortcut_literal, Component, ParseMode};
+use crate::rose::RoseEngine;
 use crate::ue2common::ReportId;
 use crate::{CompileError, ErrorKind};
 
@@ -48,6 +49,14 @@ pub(crate) fn add_expression(
     ng.add_graph(build_expr.g);
 
     Ok(())
+}
+
+fn generate_rose_engine(ng: &Ng) -> RoseEngine {
+    ng.rose.build_rose()
+}
+
+pub(crate) fn build(ng: &Ng) {
+    generate_rose_engine(ng);
 }
 
 pub(crate) fn build_graph(_pe: &ParsedExpression) -> BuiltExpression {

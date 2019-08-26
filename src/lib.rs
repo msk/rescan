@@ -2,10 +2,11 @@ mod compiler;
 mod grey;
 mod nfagraph;
 mod parser;
+mod rose;
 mod ue2common;
 mod util;
 
-use compiler::add_expression;
+use compiler::{add_expression, build};
 use grey::Grey;
 use nfagraph::Ng;
 pub use ue2common::ReportId;
@@ -43,6 +44,9 @@ fn compile_multi_int(expressions: &[&str], ids: &[ReportId], g: &Grey) -> Result
     for (i, (expression, &id)) in expressions.iter().zip(ids.iter()).enumerate() {
         add_expression(&mut ng, i as u32, expression, id)?;
     }
+
+    build(&ng);
+
     Ok(())
 }
 
