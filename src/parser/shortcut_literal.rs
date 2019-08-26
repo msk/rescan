@@ -26,15 +26,20 @@ impl ConstComponentVisitor for ConstructLiteralVisitor {
         Ok(())
     }
 
-    fn pre_component_sequence(&self, _c: &ComponentSequence) -> Result<(), NotLiteral> {
+    fn pre_component_sequence(&self, _c: &ComponentSequence) {
         // Pass through.
-        Ok(())
     }
+
+    fn during_ascii_component_class(&self, _c: &AsciiComponentClass) {}
+    fn during_component_sequence(&self, _c: &ComponentSequence) {}
+
+    fn post_ascii_component_class(&self, _c: &AsciiComponentClass) {}
+    fn post_component_sequence(&self, _c: &ComponentSequence) {}
 }
 
 pub(crate) fn shortcut_literal(ng: &mut Ng, pe: &ParsedExpression) -> bool {
     let mut vis = ConstructLiteralVisitor::default();
-    if let Err(_not_literal) = pe.component.accept(Box::new(&mut vis)) {
+    if let Err(_not_literal) = pe.component.accept(&mut vis) {
         return false;
     }
 

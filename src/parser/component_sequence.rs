@@ -12,8 +12,21 @@ impl ComponentSequence {
 }
 
 impl Component for ComponentSequence {
-    fn accept(&self, _v: Box<&mut dyn ConstComponentVisitor>) -> Result<(), NotLiteral> {
-        unimplemented!()
+    fn accept(&self, v: &mut dyn ConstComponentVisitor) -> Result<(), NotLiteral> {
+        v.pre_component_sequence(self);
+
+        let mut child_iter = self.children.iter().peekable();
+        while let Some(child) = child_iter.next() {
+            child.accept(v)?;
+
+            if child_iter.peek().is_some() {
+                v.during_component_sequence(self);
+            }
+        }
+
+        v.post_component_sequence(self);
+
+        Ok(())
     }
 
     fn note_positions(&mut self, bs: &mut GlushkovBuildState) {
