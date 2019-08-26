@@ -9,6 +9,7 @@ mod ue2common;
 mod util;
 
 use compiler::{add_expression, build};
+pub use database::Database;
 use grey::Grey;
 use nfagraph::Ng;
 pub use runtime::scan;
@@ -17,16 +18,20 @@ pub use util::compile_error::{CompileError, ErrorKind};
 use util::CompileContext;
 
 /// Compiles a regular expression.
-pub fn compile(expression: &str) -> Result<(), CompileError> {
+pub fn compile(expression: &str) -> Result<Database, CompileError> {
     compile_multi_int(&[expression], &[0], &Grey::default())
 }
 
 /// Compiles multiple regular expressions.
-pub fn compile_multi(expressions: &[&str], ids: &[ReportId]) -> Result<(), CompileError> {
+pub fn compile_multi(expressions: &[&str], ids: &[ReportId]) -> Result<Database, CompileError> {
     compile_multi_int(expressions, ids, &Grey::default())
 }
 
-fn compile_multi_int(expressions: &[&str], ids: &[ReportId], g: &Grey) -> Result<(), CompileError> {
+fn compile_multi_int(
+    expressions: &[&str],
+    ids: &[ReportId],
+    g: &Grey,
+) -> Result<Database, CompileError> {
     if expressions.is_empty() {
         return Err(CompileError::new(
             ErrorKind::Other,
@@ -48,9 +53,7 @@ fn compile_multi_int(expressions: &[&str], ids: &[ReportId], g: &Grey) -> Result
         add_expression(&mut ng, i as u32, expression, id)?;
     }
 
-    build(&ng);
-
-    Ok(())
+    Ok(build(&ng))
 }
 
 #[cfg(test)]
