@@ -53,6 +53,8 @@ impl<'a> GlushkovBuildState<'a> {
     }
 
     fn connect_successors(&mut self, from: PositionInfo, mut tolist: Vec<PositionInfo>) {
+        debug_assert!(from.pos != GlushkovBuildState::pos_epsilon());
+
         filter_edges(self, from, &mut tolist);
 
         let i = tolist.iter().position(|e| e.pos == self.accept_state);
@@ -61,7 +63,7 @@ impl<'a> GlushkovBuildState<'a> {
             tolist[i] = fakedot.into();
         }
 
-        let succ = &mut self.successors.get_mut(&from.pos).expect("invalid key");
+        let succ = self.successors.entry(from.pos).or_insert_with(HashSet::new);
 
         for to in tolist.iter() {
             succ.insert(*to);

@@ -58,6 +58,11 @@ mod tests {
     use super::Grey;
 
     #[test]
+    fn compile_single() {
+        assert!(super::compile("foobar").is_ok());
+    }
+
+    #[test]
     fn compile_multi_int_empty_input() {
         assert!(super::compile_multi_int(&[], &[], &Grey::default()).is_err());
     }

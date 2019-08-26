@@ -48,6 +48,7 @@ impl<'a> Iterator for Ue2LiteralIter<'a> {
     fn next(&mut self) -> Option<Self::Item> {
         let c = *self.lit.s.get(self.idx)?;
         let nocase = self.lit.nocase.get(self.idx)?;
+        self.idx += 1;
         Some(Ue2LiteralElem { c, nocase })
     }
 }
