@@ -1,14 +1,17 @@
 mod compiler;
+mod database;
 mod grey;
 mod nfagraph;
 mod parser;
 mod rose;
+mod runtime;
 mod ue2common;
 mod util;
 
 use compiler::{add_expression, build};
 use grey::Grey;
 use nfagraph::Ng;
+pub use runtime::scan;
 pub use ue2common::ReportId;
 pub use util::compile_error::{CompileError, ErrorKind};
 use util::CompileContext;

@@ -1,3 +1,4 @@
+use crate::database::Database;
 use crate::nfagraph::{make_nfa_builder, Ng, NgHolder};
 use crate::parser::{make_glushkov_build_state, parse, shortcut_literal, Component, ParseMode};
 use crate::rose::RoseEngine;
@@ -55,8 +56,14 @@ fn generate_rose_engine(ng: &Ng) -> RoseEngine {
     ng.rose.build_rose()
 }
 
-pub(crate) fn build(ng: &Ng) {
-    generate_rose_engine(ng);
+fn db_create(rose: RoseEngine) -> Database {
+    Database::new(rose)
+}
+
+pub(crate) fn build(ng: &Ng) -> Database {
+    let rose = generate_rose_engine(ng);
+
+    db_create(rose)
 }
 
 pub(crate) fn build_graph(_pe: &ParsedExpression) -> BuiltExpression {
