@@ -11,8 +11,9 @@ pub(crate) struct ParsedExpression {
 }
 
 impl ParsedExpression {
-    fn new(_index: u32, expression: &str) -> Result<Self, CompileError> {
-        let mut mode = ParseMode::default();
+    fn new(_index: u32, expression: &str, flags: Flags) -> Result<Self, CompileError> {
+        let flags = flags & !Flags::QUIET;
+        let mut mode = ParseMode::new(flags);
 
         let component = parse(expression, &mut mode)?;
         Ok(ParsedExpression { component })
@@ -27,7 +28,7 @@ pub(crate) fn add_expression(
     ng: &mut Ng,
     index: u32,
     expression: &str,
-    _flags: Flags,
+    flags: Flags,
     _id: ReportId,
 ) -> Result<(), CompileError> {
     let cc = &ng.cc;
@@ -39,7 +40,7 @@ pub(crate) fn add_expression(
         ));
     }
 
-    let pe = ParsedExpression::new(index, expression)?;
+    let pe = ParsedExpression::new(index, expression, flags)?;
 
     // If this expression is a literal, we can feed it directly to Rose rather
     // than building the NFA graph.
