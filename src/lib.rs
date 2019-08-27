@@ -5,6 +5,7 @@ mod nfagraph;
 mod parser;
 mod rose;
 mod runtime;
+mod scratch;
 mod ue2common;
 mod util;
 
@@ -15,6 +16,7 @@ use grey::Grey;
 use itertools::izip;
 use nfagraph::Ng;
 pub use runtime::scan;
+pub use scratch::Scratch;
 pub use ue2common::ReportId;
 pub use util::compile_error::{CompileError, ErrorKind};
 use util::CompileContext;
@@ -79,6 +81,8 @@ bitflags! {
         const QUIET = 0x0400;
     }
 }
+
+pub enum Error {}
 
 #[cfg(test)]
 mod tests {
