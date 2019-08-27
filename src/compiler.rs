@@ -3,6 +3,7 @@ use crate::nfagraph::{make_nfa_builder, Ng, NgHolder};
 use crate::parser::{make_glushkov_build_state, parse, shortcut_literal, Component, ParseMode};
 use crate::rose::RoseEngine;
 use crate::ue2common::ReportId;
+use crate::Flags;
 use crate::{CompileError, ErrorKind};
 
 pub(crate) struct ParsedExpression {
@@ -26,6 +27,7 @@ pub(crate) fn add_expression(
     ng: &mut Ng,
     index: u32,
     expression: &str,
+    _flags: Flags,
     _id: ReportId,
 ) -> Result<(), CompileError> {
     let cc = &ng.cc;
