@@ -1,22 +1,35 @@
+mod expression_info;
+
 use crate::database::Database;
 use crate::nfagraph::{make_nfa_builder, Ng, NgHolder};
-use crate::parser::{make_glushkov_build_state, parse, shortcut_literal, Component, ParseMode};
+use crate::parser::{
+    make_glushkov_build_state, parse, prefilter_tree, shortcut_literal, Component, ParseMode,
+};
 use crate::rose::RoseEngine;
 use crate::ue2common::ReportId;
 use crate::Flags;
 use crate::{CompileError, ErrorKind};
+use expression_info::ExpressionInfo;
 
 pub(crate) struct ParsedExpression {
+    expr: ExpressionInfo,
     pub(crate) component: Box<dyn Component>,
 }
 
 impl ParsedExpression {
     fn new(_index: u32, expression: &str, flags: Flags) -> Result<Self, CompileError> {
+        let mut expr = ExpressionInfo {
+            utf8: false,
+            prefilter: flags.contains(Flags::PREFILTER),
+        };
         let flags = flags & !Flags::QUIET;
         let mut mode = ParseMode::new(flags);
 
         let component = parse(expression, &mut mode)?;
-        Ok(ParsedExpression { component })
+
+        expr.utf8 = mode.utf8; // utf8 may be set by parse()
+
+        Ok(ParsedExpression { expr, component })
     }
 }
 
@@ -41,6 +54,11 @@ pub(crate) fn add_expression(
     }
 
     let pe = ParsedExpression::new(index, expression, flags)?;
+
+    // Apply prefiltering transformations if desired.
+    if pe.expr.prefilter {
+        prefilter_tree(pe.component.as_ref());
+    }
 
     // If this expression is a literal, we can feed it directly to Rose rather
     // than building the NFA graph.

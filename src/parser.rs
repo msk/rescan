@@ -8,6 +8,7 @@ mod control_verbs;
 mod parser_util;
 mod position;
 mod position_info;
+mod prefilter;
 mod shortcut_literal;
 
 pub(in crate::parser) use ascii_component_class::AsciiComponentClass;
@@ -20,6 +21,7 @@ pub(in crate::parser) use const_component_visitor::ConstComponentVisitor;
 pub(crate) use parser_util::ParseMode;
 pub(crate) use position::{PosFlags, Position};
 pub(crate) use position_info::PositionInfo;
+pub(crate) use prefilter::prefilter_tree;
 pub(crate) use shortcut_literal::shortcut_literal;
 
 use nom::{bytes::complete::take, IResult};
