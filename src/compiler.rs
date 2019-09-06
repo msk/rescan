@@ -6,10 +6,10 @@ use crate::parser::{
     make_glushkov_build_state, parse, prefilter_tree, shortcut_literal, Component, ParseMode,
 };
 use crate::rose::RoseEngine;
-use crate::ue2common::ReportId;
 use crate::Flags;
 use crate::{CompileError, ErrorKind};
 use expression_info::ExpressionInfo;
+use rescan_util::ReportId;
 
 pub(crate) struct ParsedExpression {
     expr: ExpressionInfo,

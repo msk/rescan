@@ -6,7 +6,6 @@ mod parser;
 mod rose;
 mod runtime;
 mod scratch;
-mod ue2common;
 mod util;
 
 use bitflags::bitflags;
@@ -15,9 +14,9 @@ pub use database::Database;
 use grey::Grey;
 use itertools::izip;
 use nfagraph::Ng;
+pub use rescan_util::ReportId;
 pub use runtime::scan;
 pub use scratch::Scratch;
-pub use ue2common::ReportId;
 pub use util::compile_error::{CompileError, ErrorKind};
 use util::CompileContext;
 
