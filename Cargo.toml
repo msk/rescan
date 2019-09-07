@@ -13,3 +13,9 @@ petgraph = "0.4"
 
 [dependencies.rescan-util]
 path = "util"
+
+[workspace]
+
+members = [
+    "util",
+]
