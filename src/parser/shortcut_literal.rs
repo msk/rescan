@@ -1,7 +1,7 @@
 use crate::compiler::ParsedExpression;
 use crate::nfagraph::Ng;
 use crate::parser::*;
-use crate::util::Ue2Literal;
+use rescan_util::Ue2Literal;
 
 pub(crate) struct NotLiteral {}
 

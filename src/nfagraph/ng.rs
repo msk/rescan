@@ -1,6 +1,7 @@
 use crate::nfagraph::NgHolder;
 use crate::rose::RoseBuild;
-use crate::util::{mixed_sensitivity, CompileContext, Ue2Literal};
+use crate::util::CompileContext;
+use rescan_util::{mixed_sensitivity, Ue2Literal};
 
 pub(crate) struct Ng {
     pub(crate) cc: CompileContext,

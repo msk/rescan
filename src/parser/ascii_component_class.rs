@@ -1,6 +1,6 @@
 use crate::parser::shortcut_literal::NotLiteral;
 use crate::parser::*;
-use crate::util::{make_caseless, CharReach};
+use rescan_util::{make_caseless, CharReach};
 
 /// Character classes and their mnemonics.
 pub(crate) struct AsciiComponentClass {

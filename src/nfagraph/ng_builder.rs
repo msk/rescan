@@ -1,7 +1,7 @@
 use crate::compiler::BuiltExpression;
 use crate::nfagraph::{NfaVertex, NgHolder};
 use crate::parser::{PosFlags, Position};
-use crate::util::CharReach;
+use rescan_util::CharReach;
 
 pub(crate) struct NfaBuilder {
     graph: NgHolder,

@@ -3,7 +3,7 @@ use petgraph::Graph;
 use std::ops::{Index, IndexMut};
 
 use crate::parser::PosFlags;
-use crate::util::CharReach;
+use rescan_util::CharReach;
 
 #[derive(Default)]
 pub(crate) struct NfaGraphVertexProps {

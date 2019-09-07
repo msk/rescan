@@ -1,10 +1,9 @@
+use crate::{mytoupper, ourisalpha};
 use bit_vec::BitVec;
 use std::cmp::Ordering;
 
-use crate::util::{mytoupper, ourisalpha};
-
 #[derive(Default, Eq)]
-pub(crate) struct Ue2Literal {
+pub struct Ue2Literal {
     s: Vec<u8>,
     nocase: BitVec,
     pure: bool, // born from cutting or not (pure literal).
@@ -21,7 +20,7 @@ struct Ue2LiteralIter<'a> {
 }
 
 impl Ue2Literal {
-    pub(crate) fn is_empty(&self) -> bool {
+    pub fn is_empty(&self) -> bool {
         self.s.is_empty()
     }
 
@@ -29,7 +28,7 @@ impl Ue2Literal {
         Ue2LiteralIter { lit: self, idx: 0 }
     }
 
-    pub(crate) fn push(&mut self, mut c: u8, nc: bool) {
+    pub fn push(&mut self, mut c: u8, nc: bool) {
         if nc {
             c = mytoupper(c);
         }
@@ -37,7 +36,7 @@ impl Ue2Literal {
         self.s.push(c);
     }
 
-    pub(crate) fn set_pure(&mut self) {
+    pub fn set_pure(&mut self) {
         self.pure = true;
     }
 }
@@ -96,7 +95,7 @@ where
     nc && cs
 }
 
-pub(crate) fn mixed_sensitivity(s: &Ue2Literal) -> bool {
+pub fn mixed_sensitivity(s: &Ue2Literal) -> bool {
     mixed_sensitivity_in(s.iter())
 }
 
