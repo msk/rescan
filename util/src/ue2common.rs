@@ -28,9 +28,9 @@ where
 
 /// Aligns to the next n-byte boundary.
 #[inline]
-pub fn round_up_n<T>(a: T, n: usize) -> T
+pub fn round_up_n<T>(a: T, n: u8) -> T
 where
-    T: Add + BitAnd + From<usize>,
+    T: Add + BitAnd + From<u8>,
     <T as Add>::Output: Into<T>,
     <T as BitAnd>::Output: Into<T>,
 {
@@ -39,9 +39,9 @@ where
 
 /// Aligns to the previous n-byte boundary.
 #[inline]
-pub fn round_down_n<T>(a: T, n: usize) -> T
+pub fn round_down_n<T>(a: T, n: u8) -> T
 where
-    T: BitAnd + From<usize>,
+    T: BitAnd + From<u8>,
     <T as BitAnd>::Output: Into<T>,
 {
     (a & (!(n - 1)).into()).into()

@@ -1,12 +1,17 @@
 use crate::{mytolower, mytoupper, BitField256};
 use std::ops::BitOrAssign;
 
+/// Character reachability.
+///
+/// This is a simple (but hopefully fast) struct for representing 8-bit
+/// character reachability, along with a bunch of useful operations.
 pub struct CharReach {
+    /// Underlying storage.
     bits: BitField256,
 }
 
 impl CharReach {
-    /// Constructs a character class containing a single char.
+    /// Constructs a character class containing a single 8-bit character.
     pub fn from_char(c: u8) -> Self {
         let mut cr = CharReach::default();
         cr.set(c);
@@ -16,6 +21,11 @@ impl CharReach {
     /// Sets all bits.
     pub fn setall(&mut self) {
         self.bits.setall();
+    }
+
+    /// Clears all bits.
+    pub fn clear(&mut self) {
+        self.bits.clear();
     }
 
     /// Sets bit N.
@@ -28,8 +38,13 @@ impl CharReach {
         self.bits.test(c)
     }
 
+    /// Switches on the bits in the range `from..=to`.
+    pub fn set_range(&mut self, from: u8, to: u8) {
+        self.bits.set_range(from, to)
+    }
+
     /// Returns number of bits set on.
-    pub fn count(&self) -> usize {
+    pub fn count(&self) -> u8 {
         self.bits.count()
     }
 
