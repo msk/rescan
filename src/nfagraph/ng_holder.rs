@@ -41,8 +41,8 @@ impl NgHolder {
         inner.add_edge(start_ds, start_ds, NfaGraphEdgeProps::default());
         inner.add_edge(accept, accept_eod, NfaGraphEdgeProps::default());
 
-        inner[start].char_reach.setall();
-        inner[start_ds].char_reach.setall();
+        inner[start].char_reach.set_all();
+        inner[start_ds].char_reach.set_all();
 
         NgHolder {
             inner,

@@ -33,8 +33,8 @@ impl NfaBuilder {
         self.graph.accept_eod
     }
 
-    pub(crate) fn add_char_reach(&mut self, pos: NfaVertex, cr: &CharReach) {
-        self.graph[pos].char_reach.bitor(cr);
+    pub(crate) fn add_char_reach(&mut self, pos: NfaVertex, cr: CharReach) {
+        self.graph[pos].char_reach |= cr;
     }
 
     pub(crate) fn get_assert_flag(&self, pos: NfaVertex) -> PosFlags {

@@ -38,6 +38,6 @@ impl Component for AsciiComponentClass {
         let builder = bs.get_builder_mut();
         let position = builder.make_position();
 
-        builder.add_char_reach(position, &self.cr);
+        builder.add_char_reach(position, self.cr);
     }
 }
