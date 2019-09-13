@@ -1,9 +1,15 @@
+use std::fmt;
+
 /// Error thrown by the compiler.
 #[derive(Debug)]
 pub struct CompileError {
-    /// Reason for the error.
-    pub reason: String,
     kind: ErrorKind,
+
+    /// Reason for the error.
+    pub(crate) reason: String,
+
+    /// The index of the expression referred to.
+    index: Option<u32>,
 }
 
 /// A list specifying categories of compile error.
@@ -22,8 +28,23 @@ pub enum ErrorKind {
 impl CompileError {
     pub(crate) fn new<T: Into<String>>(kind: ErrorKind, why: T) -> Self {
         CompileError {
-            reason: why.into(),
             kind,
+            reason: why.into(),
+            index: None,
+        }
+    }
+
+    pub(crate) fn set_expression_index(&mut self, index: u32) {
+        debug_assert!(self.index.is_none());
+        self.index = Some(index);
+    }
+}
+
+impl fmt::Display for CompileError {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match self.index {
+            Some(index) => write!(f, "{} in expression {}", self.reason, index),
+            None => write!(f, "{}", self.reason),
         }
     }
 }

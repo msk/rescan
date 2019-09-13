@@ -58,7 +58,11 @@ fn compile_multi_int(
     let mut ng = Ng::new(cc);
 
     for (i, (exp, &fl, &id)) in izip!(expressions, flags, ids).enumerate() {
-        add_expression(&mut ng, i as u32, exp, fl, id)?;
+        let expression_index = i as u32;
+        if let Err(mut e) = add_expression(&mut ng, expression_index, exp, fl, id) {
+            e.set_expression_index(expression_index);
+            return Err(e);
+        }
     }
 
     Ok(build(&ng))
