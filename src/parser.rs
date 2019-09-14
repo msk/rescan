@@ -24,11 +24,26 @@ pub(crate) use position_info::PositionInfo;
 pub(crate) use prefilter::prefilter_tree;
 pub(crate) use shortcut_literal::shortcut_literal;
 
-use nom::{bytes::complete::take, IResult};
-
 use crate::parser::control_verbs::read_control_verbs;
-use crate::util::compile_error::CompileError;
+use crate::util::compile_error::{CompileError, ErrorKind};
+use nom::{bytes::complete::take, character::complete::char, IResult};
+use std::mem;
 
+/// Structure representing current state as we're parsing (current sequence,
+/// current options). Stored in the 'sequences' vector.
+struct ExprState {
+    seq: ComponentSequence, // Current sequence
+    offset: usize,          // Offset seq was entered, for error reporting
+    mode: ParseMode,        // Current mode flags
+}
+
+impl ExprState {
+    fn new(seq: ComponentSequence, offset: usize, mode: ParseMode) -> Self {
+        Self { seq, offset, mode }
+    }
+}
+
+/// Adds a literal to the current sequence.
 fn add_literal(
     current_seq: &mut ComponentSequence,
     c: char,
@@ -39,31 +54,117 @@ fn add_literal(
     Ok(())
 }
 
+struct Context<'p> {
+    ptr: &'p str,
+    p: &'p str,
+    mode: ParseMode,
+
+    /// Stack of sequences and flags used to store state when we enter
+    /// sub-sequences.
+    sequences: Vec<ExprState>,
+
+    /// Index of the next capturing group.
+    ///
+    /// Note that zero is reserved for the root sequence.
+    group_index: u32,
+
+    /// Current sequence being appended to.
+    current_seq: ComponentSequence,
+}
+
+impl<'p> Context<'p> {
+    fn new(ptr: &'p str, p: &'p str, mode: ParseMode) -> Self {
+        let mut current_seq = ComponentSequence::default();
+        current_seq.set_capture_index(0);
+
+        Self {
+            ptr,
+            p,
+            mode,
+            sequences: Vec::new(),
+            group_index: 1,
+            current_seq,
+        }
+    }
+
+    fn push_sequence(&mut self, ts: &'p str) {
+        let mut seq = ComponentSequence::default();
+        seq.set_capture_index(self.group_index);
+        self.group_index += 1;
+        mem::swap(&mut self.current_seq, &mut seq);
+        self.sequences
+            .push(ExprState::new(seq, ts.len() - self.ptr.len(), self.mode));
+    }
+
+    fn pop_sequence(&mut self) -> Result<(), CompileError> {
+        let (mut seq, mode) = if let Some(v) = self.sequences.pop() {
+            (v.seq, v.mode)
+        } else {
+            return Err(CompileError::new(
+                ErrorKind::LocatedParse,
+                "Unmatched parentheses",
+            ));
+        };
+        mem::swap(&mut self.current_seq, &mut seq);
+        seq.finalize();
+        self.current_seq.add_component(Box::new(seq));
+        self.mode = mode;
+        Ok(())
+    }
+
+    fn enter_capturing_group(&mut self, ts: &'p str) {
+        self.push_sequence(ts);
+    }
+
+    fn exit_group(&mut self) -> Result<(), CompileError> {
+        self.pop_sequence()?;
+        Ok(())
+    }
+
+    fn main(&mut self, ts: &'p str) -> Result<(), CompileError> {
+        if char::<&str, ()>('(')(ts).is_ok() {
+            self.enter_capturing_group(ts);
+        } else if char::<&str, ()>(')')(ts).is_ok() {
+            self.exit_group()?;
+        } else if let Ok((p, c)) = take_any(ts) {
+            // TODO: Support UTF-8 literals
+            assert!(c.is_ascii());
+            if let Err(mut e) = add_literal(&mut self.current_seq, c, self.mode) {
+                e.reason = e.reason + &format!(" at index {}", self.ptr.len() - self.p.len());
+                return Err(e);
+            }
+            self.p = p
+        }
+        Ok(())
+    }
+
+    fn parse(mut self) -> Result<ComponentSequence, CompileError> {
+        while !self.p.is_empty() {
+            self.main(self.p)?;
+        }
+
+        if let Some(seq) = self.sequences.last() {
+            return Err(CompileError::new(
+                ErrorKind::Parse,
+                format!(
+                    "Missing close parenthesis for group started at index {}.",
+                    seq.offset
+                ),
+            ));
+        }
+
+        Ok(self.current_seq)
+    }
+}
+
 pub(crate) fn parse(
     ptr: &str,
     global_mode: &mut ParseMode,
 ) -> Result<Box<dyn Component>, CompileError> {
-    let p = ptr;
+    let p = read_control_verbs(ptr, 0, global_mode)?;
 
-    let mut p = read_control_verbs(p, 0, global_mode)?;
+    let root_seq = Context::new(ptr, p, *global_mode).parse()?;
 
-    let mode = *global_mode;
-
-    let mut root_seq = ComponentSequence::default();
-
-    let current_seq = &mut root_seq;
-
-    while !p.is_empty() {
-        if let Ok((input, c)) = take_any(p) {
-            // TODO: Support UTF-8 literals
-            assert!(c.is_ascii());
-            if let Err(mut e) = add_literal(current_seq, c, mode) {
-                e.reason = e.reason + &format!(" at index {}", ptr.len() - p.len());
-                return Err(e);
-            }
-            p = input
-        }
-    }
     Ok(Box::new(root_seq))
 }
 

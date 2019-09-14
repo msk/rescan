@@ -3,11 +3,24 @@ use crate::parser::*;
 
 pub(crate) struct ComponentSequence {
     children: Vec<Box<dyn Component>>,
+    alternation: Option<()>,
+
+    capture_index: Option<u32>,
 }
 
 impl ComponentSequence {
+    pub(in crate::parser) fn finalize(&mut self) {
+        if self.alternation.is_some() {
+            unimplemented!();
+        }
+    }
+
     pub(in crate::parser) fn add_component(&mut self, comp: Box<dyn Component>) {
         self.children.push(comp);
+    }
+
+    pub(crate) fn set_capture_index(&mut self, idx: u32) {
+        self.capture_index = Some(idx);
     }
 }
 
@@ -39,6 +52,8 @@ impl Default for ComponentSequence {
     fn default() -> Self {
         ComponentSequence {
             children: Vec::new(),
+            alternation: None,
+            capture_index: None,
         }
     }
 }
