@@ -1,6 +1,5 @@
 use super::component_class::walk_component_class;
 use super::component_sequence::walk_component_sequence;
-use super::shortcut_literal::NotLiteral;
 use super::GlushkovBuildState;
 use super::{ComponentClass, ComponentSequence, ConstComponentVisitor};
 
@@ -36,7 +35,7 @@ impl From<ComponentSequence> for Component {
 pub(crate) fn walk_component<V: ConstComponentVisitor>(
     v: &mut V,
     c: &Component,
-) -> Result<(), NotLiteral> {
+) -> Result<(), V::Error> {
     match c {
         Component::Class(c) => walk_component_class(v, c),
         Component::Sequence(c) => walk_component_sequence(v, c),

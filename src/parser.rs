@@ -5,6 +5,8 @@ mod component_class;
 mod component_sequence;
 mod const_component_visitor;
 mod control_verbs;
+#[cfg(test)]
+mod dump;
 mod parser_util;
 mod position;
 mod position_info;
@@ -177,11 +179,18 @@ fn take_any(input: &str) -> IResult<&str, char> {
 
 #[cfg(test)]
 mod tests {
+    use super::dump::dump_tree;
     use super::*;
 
     #[test]
-    fn parse_any() {
+    fn parse_literal() {
         let mut mode = ParseMode::default();
-        assert!(parse("abc", &mut mode).is_ok());
+        let c = parse("abc", &mut mode).expect("valid expression");
+        let mut out = String::new();
+        dump_tree(&mut out, &c).unwrap();
+        assert_eq!(
+            out,
+            "ASCII CLASS\n  a\nASCII CLASS\n  b\nASCII CLASS\n  c\n"
+        );
     }
 }

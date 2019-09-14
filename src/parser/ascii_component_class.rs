@@ -1,4 +1,3 @@
-use crate::parser::shortcut_literal::NotLiteral;
 use crate::parser::*;
 use rescan_util::{make_caseless, CharReach};
 
@@ -36,7 +35,9 @@ impl AsciiComponentClass {
 pub(in crate::parser) fn walk_ascii_component_class<V: ConstComponentVisitor>(
     v: &mut V,
     c: &AsciiComponentClass,
-) -> Result<(), NotLiteral> {
+) -> Result<(), V::Error> {
     v.pre_ascii_component_class(c)?;
+    v.during_ascii_component_class(c);
+    v.post_ascii_component_class(c);
     Ok(())
 }

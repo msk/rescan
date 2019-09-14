@@ -1,4 +1,3 @@
-use crate::parser::shortcut_literal::NotLiteral;
 use crate::parser::*;
 
 pub(crate) struct ComponentSequence {
@@ -35,7 +34,7 @@ impl ComponentSequence {
 pub(in crate::parser) fn walk_component_sequence<V: ConstComponentVisitor>(
     v: &mut V,
     c: &ComponentSequence,
-) -> Result<(), NotLiteral> {
+) -> Result<(), V::Error> {
     v.pre_component_sequence(c);
 
     let mut child_iter = c.children.iter().peekable();

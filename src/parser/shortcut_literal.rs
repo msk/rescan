@@ -12,6 +12,8 @@ struct ConstructLiteralVisitor {
 }
 
 impl ConstComponentVisitor for ConstructLiteralVisitor {
+    type Error = NotLiteral;
+
     fn pre_ascii_component_class(&mut self, c: &AsciiComponentClass) -> Result<(), NotLiteral> {
         let cr = &c.cr;
         let width = cr.count();
@@ -34,7 +36,7 @@ impl ConstComponentVisitor for ConstructLiteralVisitor {
     fn during_ascii_component_class(&self, _c: &AsciiComponentClass) {}
     fn during_component_sequence(&self, _c: &ComponentSequence) {}
 
-    fn post_ascii_component_class(&self, _c: &AsciiComponentClass) {}
+    fn post_ascii_component_class(&mut self, _c: &AsciiComponentClass) {}
     fn post_component_sequence(&self, _c: &ComponentSequence) {}
 }
 

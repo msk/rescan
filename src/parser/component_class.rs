@@ -1,5 +1,4 @@
 use super::ascii_component_class::{walk_ascii_component_class, AsciiComponentClass};
-use super::shortcut_literal::NotLiteral;
 use super::{ConstComponentVisitor, GlushkovBuildState, ParseMode};
 use crate::util::compile_error::{CompileError, ErrorKind};
 
@@ -52,7 +51,7 @@ impl ComponentClass {
 pub(crate) fn walk_component_class<V: ConstComponentVisitor>(
     v: &mut V,
     c: &ComponentClass,
-) -> Result<(), NotLiteral> {
+) -> Result<(), V::Error> {
     match c {
         ComponentClass::Ascii(c) => walk_ascii_component_class(v, c),
     }
