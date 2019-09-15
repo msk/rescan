@@ -1,3 +1,4 @@
+use super::ascii_component_class::AsciiComponentClass;
 use crate::parser::shortcut_literal::NotLiteral;
 use crate::parser::*;
 

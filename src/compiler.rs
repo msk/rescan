@@ -13,7 +13,7 @@ use rescan_util::ReportId;
 
 pub(crate) struct ParsedExpression {
     expr: ExpressionInfo,
-    pub(crate) component: Box<dyn Component>,
+    pub(crate) component: Component,
 }
 
 impl ParsedExpression {
@@ -53,11 +53,11 @@ pub(crate) fn add_expression(
         ));
     }
 
-    let pe = ParsedExpression::new(index, expression, flags)?;
+    let mut pe = ParsedExpression::new(index, expression, flags)?;
 
     // Apply prefiltering transformations if desired.
     if pe.expr.prefilter {
-        prefilter_tree(pe.component.as_ref());
+        prefilter_tree(&pe.component);
     }
 
     // If this expression is a literal, we can feed it directly to Rose rather
@@ -66,7 +66,7 @@ pub(crate) fn add_expression(
         return Ok(());
     }
 
-    let build_expr = build_graph(&pe);
+    let build_expr = build_graph(&mut pe);
 
     ng.add_graph(build_expr.g);
 
@@ -87,10 +87,13 @@ pub(crate) fn build(ng: &Ng) -> Database {
     db_create(rose)
 }
 
-pub(crate) fn build_graph(_pe: &ParsedExpression) -> BuiltExpression {
+pub(crate) fn build_graph(pe: &mut ParsedExpression) -> BuiltExpression {
     let mut builder = make_nfa_builder();
 
-    let _bs = make_glushkov_build_state(&mut builder);
+    let mut bs = make_glushkov_build_state(&mut builder);
+
+    // Map position IDs to characters/components.
+    pe.component.note_positions(&mut bs);
 
     builder.get_graph()
 }

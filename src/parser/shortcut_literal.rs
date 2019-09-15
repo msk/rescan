@@ -1,6 +1,7 @@
+use super::ascii_component_class::AsciiComponentClass;
 use crate::compiler::ParsedExpression;
 use crate::nfagraph::Ng;
-use crate::parser::*;
+use crate::parser::{walk_component, ComponentSequence, ConstComponentVisitor};
 use rescan_util::Ue2Literal;
 
 pub(crate) struct NotLiteral {}
@@ -39,7 +40,7 @@ impl ConstComponentVisitor for ConstructLiteralVisitor {
 
 pub(crate) fn shortcut_literal(ng: &mut Ng, pe: &ParsedExpression) -> bool {
     let mut vis = ConstructLiteralVisitor::default();
-    if let Err(_not_literal) = pe.component.accept(&mut vis) {
+    if let Err(_not_literal) = walk_component(&mut vis, &pe.component) {
         return false;
     }
 

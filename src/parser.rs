@@ -11,18 +11,18 @@ mod position_info;
 mod prefilter;
 mod shortcut_literal;
 
-pub(in crate::parser) use ascii_component_class::AsciiComponentClass;
 pub(crate) use build_state::make_glushkov_build_state;
-pub(in crate::parser) use build_state::GlushkovBuildState;
-pub(crate) use component::Component;
-pub(in crate::parser) use component_class::get_literal_component_class;
-pub(in crate::parser) use component_sequence::ComponentSequence;
-pub(in crate::parser) use const_component_visitor::ConstComponentVisitor;
+pub(crate) use component::{walk_component, Component};
 pub(crate) use parser_util::ParseMode;
 pub(crate) use position::{PosFlags, Position};
 pub(crate) use position_info::PositionInfo;
 pub(crate) use prefilter::prefilter_tree;
 pub(crate) use shortcut_literal::shortcut_literal;
+
+pub(in crate::parser) use build_state::GlushkovBuildState;
+pub(in crate::parser) use component_class::{get_literal_component_class, ComponentClass};
+pub(in crate::parser) use component_sequence::ComponentSequence;
+pub(in crate::parser) use const_component_visitor::ConstComponentVisitor;
 
 use crate::parser::control_verbs::read_control_verbs;
 use crate::util::compile_error::{CompileError, ErrorKind};
@@ -107,7 +107,7 @@ impl<'p> Context<'p> {
         };
         mem::swap(&mut self.current_seq, &mut seq);
         seq.finalize();
-        self.current_seq.add_component(Box::new(seq));
+        self.current_seq.add_component(seq.into());
         self.mode = mode;
         Ok(())
     }
@@ -157,15 +157,12 @@ impl<'p> Context<'p> {
     }
 }
 
-pub(crate) fn parse(
-    ptr: &str,
-    global_mode: &mut ParseMode,
-) -> Result<Box<dyn Component>, CompileError> {
+pub(crate) fn parse(ptr: &str, global_mode: &mut ParseMode) -> Result<Component, CompileError> {
     let p = read_control_verbs(ptr, 0, global_mode)?;
 
     let root_seq = Context::new(ptr, p, *global_mode).parse()?;
 
-    Ok(Box::new(root_seq))
+    Ok(Component::Sequence(root_seq))
 }
 
 fn take_any(input: &str) -> IResult<&str, char> {

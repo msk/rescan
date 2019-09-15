@@ -15,9 +15,7 @@ impl AsciiComponentClass {
             cr: CharReach::default(),
         }
     }
-}
 
-impl AsciiComponentClass {
     pub(in crate::parser) fn add(&mut self, c: u8) {
         let mut ncr = CharReach::from_char(c);
         if self.mode.caseless {
@@ -26,18 +24,19 @@ impl AsciiComponentClass {
 
         self.cr |= ncr;
     }
-}
 
-impl Component for AsciiComponentClass {
-    fn accept(&self, v: &mut dyn ConstComponentVisitor) -> Result<(), NotLiteral> {
-        v.pre_ascii_component_class(self)?;
-        Ok(())
-    }
-
-    fn note_positions(&mut self, bs: &mut GlushkovBuildState) {
+    pub(in crate::parser) fn note_positions(&mut self, bs: &mut GlushkovBuildState) {
         let builder = bs.get_builder_mut();
         let position = builder.make_position();
 
         builder.add_char_reach(position, self.cr);
     }
+}
+
+pub(in crate::parser) fn walk_ascii_component_class<V: ConstComponentVisitor>(
+    v: &mut V,
+    c: &AsciiComponentClass,
+) -> Result<(), NotLiteral> {
+    v.pre_ascii_component_class(c)?;
+    Ok(())
 }

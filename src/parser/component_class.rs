@@ -1,4 +1,6 @@
-use crate::parser::*;
+use super::ascii_component_class::{walk_ascii_component_class, AsciiComponentClass};
+use super::shortcut_literal::NotLiteral;
+use super::{ConstComponentVisitor, GlushkovBuildState, ParseMode};
 use crate::util::compile_error::{CompileError, ErrorKind};
 
 pub(in crate::parser) fn get_component_class(mode: ParseMode) -> ComponentClass {
@@ -18,7 +20,7 @@ pub(in crate::parser) fn get_literal_component_class(
     Ok(cc)
 }
 
-pub(in crate::parser) enum ComponentClass {
+pub(crate) enum ComponentClass {
     Ascii(AsciiComponentClass),
 }
 
@@ -37,12 +39,21 @@ impl ComponentClass {
         }
         Ok(())
     }
+
+    /// Informs the Glushkov build process of the positions used by this component.
+    pub(in crate::parser) fn note_positions(&mut self, bs: &mut GlushkovBuildState) {
+        match self {
+            ComponentClass::Ascii(c) => c.note_positions(bs),
+        }
+    }
 }
 
-impl From<ComponentClass> for Box<dyn Component> {
-    fn from(cc: ComponentClass) -> Self {
-        match cc {
-            ComponentClass::Ascii(cc) => Box::new(cc),
-        }
+/// Applies the given const visitor functor.
+pub(crate) fn walk_component_class<V: ConstComponentVisitor>(
+    v: &mut V,
+    c: &ComponentClass,
+) -> Result<(), NotLiteral> {
+    match c {
+        ComponentClass::Ascii(c) => walk_ascii_component_class(v, c),
     }
 }

@@ -1,10 +1,44 @@
-use crate::parser::shortcut_literal::NotLiteral;
-use crate::parser::{ConstComponentVisitor, GlushkovBuildState};
+use super::component_class::walk_component_class;
+use super::component_sequence::walk_component_sequence;
+use super::shortcut_literal::NotLiteral;
+use super::GlushkovBuildState;
+use super::{ComponentClass, ComponentSequence, ConstComponentVisitor};
 
-pub(crate) trait Component {
-    /// Applies the given const visitor functor.
-    fn accept(&self, v: &mut dyn ConstComponentVisitor) -> Result<(), NotLiteral>;
+/// A component for a regular expression parse tree.
+pub(crate) enum Component {
+    Class(ComponentClass),
+    Sequence(ComponentSequence),
+}
 
+impl Component {
     /// Informs the Glushkov build process of the positions used by this component.
-    fn note_positions(&mut self, bs: &mut GlushkovBuildState);
+    pub(crate) fn note_positions(&mut self, bs: &mut GlushkovBuildState) {
+        match self {
+            Component::Class(c) => c.note_positions(bs),
+            Component::Sequence(c) => c.note_positions(bs),
+        }
+    }
+}
+
+impl From<ComponentClass> for Component {
+    fn from(c: ComponentClass) -> Self {
+        Component::Class(c)
+    }
+}
+
+impl From<ComponentSequence> for Component {
+    fn from(c: ComponentSequence) -> Self {
+        Component::Sequence(c)
+    }
+}
+
+/// Applies the given const visitor functor.
+pub(crate) fn walk_component<V: ConstComponentVisitor>(
+    v: &mut V,
+    c: &Component,
+) -> Result<(), NotLiteral> {
+    match c {
+        Component::Class(c) => walk_component_class(v, c),
+        Component::Sequence(c) => walk_component_sequence(v, c),
+    }
 }

@@ -2,7 +2,7 @@ use crate::parser::shortcut_literal::NotLiteral;
 use crate::parser::*;
 
 pub(crate) struct ComponentSequence {
-    children: Vec<Box<dyn Component>>,
+    children: Vec<Component>,
     alternation: Option<()>,
 
     capture_index: Option<u32>,
@@ -15,8 +15,16 @@ impl ComponentSequence {
         }
     }
 
-    pub(in crate::parser) fn add_component(&mut self, comp: Box<dyn Component>) {
+    pub(in crate::parser) fn add_component(&mut self, comp: Component) {
         self.children.push(comp);
+    }
+
+    /// Informs the Glushkov build process of the positions used by this component.
+    pub(in crate::parser) fn note_positions(&mut self, bs: &mut GlushkovBuildState) {
+        let _pb = bs.get_builder().num_vertices();
+        for c in self.children.iter_mut() {
+            c.note_positions(bs);
+        }
     }
 
     pub(crate) fn set_capture_index(&mut self, idx: u32) {
@@ -24,28 +32,24 @@ impl ComponentSequence {
     }
 }
 
-impl Component for ComponentSequence {
-    fn accept(&self, v: &mut dyn ConstComponentVisitor) -> Result<(), NotLiteral> {
-        v.pre_component_sequence(self);
+pub(in crate::parser) fn walk_component_sequence<V: ConstComponentVisitor>(
+    v: &mut V,
+    c: &ComponentSequence,
+) -> Result<(), NotLiteral> {
+    v.pre_component_sequence(c);
 
-        let mut child_iter = self.children.iter().peekable();
-        while let Some(child) = child_iter.next() {
-            child.accept(v)?;
+    let mut child_iter = c.children.iter().peekable();
+    while let Some(child) = child_iter.next() {
+        walk_component(v, child)?;
 
-            if child_iter.peek().is_some() {
-                v.during_component_sequence(self);
-            }
+        if child_iter.peek().is_some() {
+            v.during_component_sequence(c);
         }
-
-        v.post_component_sequence(self);
-
-        Ok(())
     }
 
-    fn note_positions(&mut self, bs: &mut GlushkovBuildState) {
-        let _pb = bs.get_builder().num_vertices();
-        unimplemented!()
-    }
+    v.post_component_sequence(c);
+
+    Ok(())
 }
 
 impl Default for ComponentSequence {
