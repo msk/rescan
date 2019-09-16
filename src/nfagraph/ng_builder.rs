@@ -45,6 +45,7 @@ impl NfaBuilder {
         self.graph.add_vertex()
     }
 
+    #[allow(dead_code)]
     pub(crate) fn num_vertices(&self) -> usize {
         self.graph.num_vertices()
     }

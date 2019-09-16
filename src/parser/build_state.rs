@@ -38,6 +38,7 @@ impl<'a> GlushkovBuildState<'a> {
         bs
     }
 
+    #[allow(dead_code)]
     pub(in crate::parser) fn get_builder(&self) -> &NfaBuilder {
         self.builder
     }
