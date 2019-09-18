@@ -6,7 +6,6 @@ use std::cmp::Ordering;
 pub struct Ue2Literal {
     s: Vec<u8>,
     nocase: BitVec,
-    pure: bool, // born from cutting or not (pure literal).
 }
 
 struct Ue2LiteralElem {
@@ -35,10 +34,6 @@ impl Ue2Literal {
         }
         self.nocase.push(nc);
         self.s.push(c);
-    }
-
-    pub fn set_pure(&mut self) {
-        self.pure = true;
     }
 }
 

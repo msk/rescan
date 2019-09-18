@@ -115,7 +115,7 @@ fn compile_multi_int(
     let som_precision = mode.som_precision();
 
     let cc = CompileContext::new(is_streaming, is_vectored, g);
-    let mut ng = Ng::new(cc, expressions.len(), som_precision);
+    let mut ng = Ng::new(&cc, expressions.len(), som_precision);
 
     for (i, (exp, &fl, &id)) in izip!(expressions, flags, ids).enumerate() {
         if let Err(mut e) = add_expression(&mut ng, i, exp, fl, id) {

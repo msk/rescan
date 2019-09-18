@@ -1,18 +1,22 @@
 use crate::compiler::ExpressionInfo;
 use crate::nfagraph::NgHolder;
 use crate::rose::RoseBuild;
-use crate::util::CompileContext;
+use crate::util::{CompileContext, ExternalReportInfo, ReportManager};
+use crate::CompileError;
 use crate::SomType;
 use rescan_util::{mixed_sensitivity, Ue2Literal};
 
-pub(crate) struct Ng {
-    pub(crate) cc: CompileContext,
+pub(crate) struct Ng<'a> {
+    rm: ReportManager<'a>,
+    pub(crate) cc: &'a CompileContext,
+
     pub(crate) rose: RoseBuild,
 }
 
-impl Ng {
-    pub(crate) fn new(cc: CompileContext, _num_patterns: usize, _som_precision: usize) -> Self {
+impl<'a> Ng<'a> {
+    pub(crate) fn new(cc: &'a CompileContext, _num_patterns: usize, _som_precision: usize) -> Self {
         Self {
+            rm: ReportManager::new(&cc.grey),
             cc,
             rose: RoseBuild { has_som: false },
         }
@@ -24,17 +28,32 @@ impl Ng {
         }
     }
 
-    pub(crate) fn add_literal(&self, literal: &Ue2Literal) -> bool {
+    pub(crate) fn add_literal(
+        &mut self,
+        literal: &Ue2Literal,
+        expr_index: usize,
+        external_report: u32,
+        highlander: bool,
+    ) -> Result<bool, CompileError> {
         debug_assert!(!literal.is_empty());
 
         if !self.cc.grey.shortcut_literals {
-            return false;
+            return Ok(false);
         }
 
+        // We can't natively handle arbitrary literals with mixed case
+        // sensitivity in Rose -- they require mechanisms like benefits masks,
+        // which have length limits etc. Better to let those go through full
+        // graph processing.
         if mixed_sensitivity(literal) {
-            return false;
+            return Ok(false);
         }
 
-        false
+        self.rm.register_ext_report(
+            external_report,
+            ExternalReportInfo::new(highlander, expr_index),
+        )?;
+
+        Ok(false)
     }
 }

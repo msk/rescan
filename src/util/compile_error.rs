@@ -34,6 +34,14 @@ impl CompileError {
         }
     }
 
+    pub(crate) fn with_index<T: Into<String>>(index: usize, why: T) -> Self {
+        Self {
+            kind: ErrorKind::Other,
+            reason: why.into(),
+            index: Some(index),
+        }
+    }
+
     pub(crate) fn set_expression_index(&mut self, index: usize) {
         debug_assert!(self.index.is_none());
         self.index = Some(index);

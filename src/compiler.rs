@@ -18,8 +18,17 @@ pub(crate) struct ParsedExpression {
 }
 
 impl ParsedExpression {
-    fn new(_index: usize, expression: &str, flags: Flags) -> Result<Self, CompileError> {
+    fn new(
+        index: usize,
+        expression: &str,
+        flags: Flags,
+        id: ReportId,
+    ) -> Result<Self, CompileError> {
         let mut expr = ExpressionInfo {
+            index,
+            report: id,
+            allow_vacuous: false,
+            highlander: flags.contains(Flags::SINGLEMATCH),
             utf8: false,
             prefilter: flags.contains(Flags::PREFILTER),
             som: SomType::None,
@@ -51,7 +60,7 @@ pub(crate) fn add_expression(
     index: usize,
     expression: &str,
     flags: Flags,
-    _id: ReportId,
+    id: ReportId,
 ) -> Result<(), CompileError> {
     let cc = &ng.cc;
 
@@ -62,7 +71,7 @@ pub(crate) fn add_expression(
         ));
     }
 
-    let mut pe = ParsedExpression::new(index, expression, flags)?;
+    let mut pe = ParsedExpression::new(index, expression, flags, id)?;
 
     // Apply prefiltering transformations if desired.
     if pe.expr.prefilter {
@@ -71,7 +80,7 @@ pub(crate) fn add_expression(
 
     // If this expression is a literal, we can feed it directly to Rose rather
     // than building the NFA graph.
-    if shortcut_literal(ng, &pe) {
+    if shortcut_literal(ng, &pe)? {
         return Ok(());
     }
 

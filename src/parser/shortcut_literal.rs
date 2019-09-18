@@ -3,6 +3,7 @@ use crate::compiler::ParsedExpression;
 use crate::nfagraph::Ng;
 use crate::parser::walk_component;
 use crate::parser::{ComponentAlternation, ComponentSequence, ConstComponentVisitor};
+use crate::CompileError;
 use rescan_util::Ue2Literal;
 
 pub(crate) struct NotLiteral {}
@@ -48,18 +49,24 @@ impl ConstComponentVisitor for ConstructLiteralVisitor {
     fn post_component_sequence(&mut self, _c: &ComponentSequence) {}
 }
 
-pub(crate) fn shortcut_literal(ng: &mut Ng, pe: &ParsedExpression) -> bool {
-    let mut vis = ConstructLiteralVisitor::default();
-    if let Err(_not_literal) = walk_component(&mut vis, &pe.component) {
-        return false;
+/// Returns `true` if the literal expression could be added to Rose.
+pub(crate) fn shortcut_literal(ng: &mut Ng, pe: &ParsedExpression) -> Result<bool, CompileError> {
+    if !ng.cc.grey.allow_literal {
+        return Ok(false);
     }
 
-    vis.lit.set_pure();
+    let expr = &pe.expr;
+
+    let mut vis = ConstructLiteralVisitor::default();
+    if let Err(_not_literal) = walk_component(&mut vis, &pe.component) {
+        return Ok(false);
+    }
+
     let lit = &vis.lit;
 
     if lit.is_empty() {
-        return false;
+        return Ok(false);
     }
 
-    ng.add_literal(lit)
+    ng.add_literal(lit, expr.index, expr.report, expr.highlander)
 }
