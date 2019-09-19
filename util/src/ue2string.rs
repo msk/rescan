@@ -20,10 +20,16 @@ struct Ue2LiteralIter<'a> {
 
 impl Ue2Literal {
     #[must_use]
+    pub fn len(&self) -> usize {
+        self.s.len()
+    }
+
+    #[must_use]
     pub fn is_empty(&self) -> bool {
         self.s.is_empty()
     }
 
+    #[must_use]
     fn iter(&self) -> Ue2LiteralIter {
         Ue2LiteralIter { lit: self, idx: 0 }
     }

@@ -27,7 +27,7 @@ pub(crate) struct ReportManager<'a> {
     report_ids: Vec<Report>,
 
     /// Mapping from Report to ID (inverse of `report_ids` vector).
-    report_id_to_internal_map: HashMap<Report, usize>,
+    report_id_to_internal_map: HashMap<Report, u32>,
 
     /// Mapping from external match ids to information about that id.
     external_id_map: HashMap<ReportId, ExternalReportInfo>,
@@ -53,7 +53,7 @@ impl<'a> ReportManager<'a> {
     }
 
     /// Fetch the ID associated with the given Report.
-    pub(crate) fn get_internal_id(&mut self, ir: &Report) -> Result<usize, CompileError> {
+    pub(crate) fn get_internal_id(&mut self, ir: &Report) -> Result<u32, CompileError> {
         if let Some(id) = self.report_id_to_internal_map.get(ir) {
             return Ok(*id);
         }
@@ -67,7 +67,8 @@ impl<'a> ReportManager<'a> {
             ));
         }
 
-        let size = self.report_ids.len();
+        #[allow(clippy::cast_possible_truncation)]
+        let size = self.report_ids.len() as u32;
         self.report_ids.push(ir.clone());
         self.report_id_to_internal_map.insert(ir.clone(), size);
         Ok(size)

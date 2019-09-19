@@ -66,7 +66,6 @@ impl NgHolder {
 
     /// Returns `true` if the graph contains an edge from one of {`start`,
     /// `start_ds`} to one of {`accept`, `accept_eod`}.
-    #[allow(dead_code)]
     pub(crate) fn is_vacuous(&self) -> bool {
         self.inner.find_edge(self.start, self.accept).is_some()
             || self.inner.find_edge(self.start, self.accept_eod).is_some()

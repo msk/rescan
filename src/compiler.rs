@@ -11,6 +11,7 @@ use crate::rose::RoseEngine;
 use crate::{CompileError, ErrorKind};
 use crate::{Flags, SomType};
 use rescan_util::ReportId;
+use std::pin::Pin;
 
 pub(crate) struct ParsedExpression {
     pub(crate) expr: ExpressionInfo,
@@ -57,7 +58,7 @@ pub(crate) struct BuiltExpression {
 }
 
 pub(crate) fn add_expression(
-    ng: &mut Ng,
+    ng: &mut Pin<Box<Ng>>,
     index: usize,
     expression: &str,
     flags: Flags,
@@ -87,7 +88,12 @@ pub(crate) fn add_expression(
 
     let build_expr = build_graph(&mut pe);
 
-    ng.add_graph(&build_expr.expr, &build_expr.g);
+    unsafe {
+        let inner: Pin<&mut Ng> = ng.as_mut();
+        inner
+            .get_unchecked_mut()
+            .add_graph(&build_expr.expr, &build_expr.g);
+    };
 
     Ok(())
 }

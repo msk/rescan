@@ -5,6 +5,7 @@ use crate::parser::walk_component;
 use crate::parser::{ComponentAlternation, ComponentSequence, ConstComponentVisitor};
 use crate::CompileError;
 use rescan_util::Ue2Literal;
+use std::pin::Pin;
 
 pub(crate) struct NotLiteral {}
 
@@ -50,7 +51,10 @@ impl ConstComponentVisitor for ConstructLiteralVisitor {
 }
 
 /// Returns `true` if the literal expression could be added to Rose.
-pub(crate) fn shortcut_literal(ng: &mut Ng, pe: &ParsedExpression) -> Result<bool, CompileError> {
+pub(crate) fn shortcut_literal(
+    ng: &mut Pin<Box<Ng>>,
+    pe: &ParsedExpression,
+) -> Result<bool, CompileError> {
     if !ng.cc.grey.allow_literal {
         return Ok(false);
     }
@@ -68,12 +72,14 @@ pub(crate) fn shortcut_literal(ng: &mut Ng, pe: &ParsedExpression) -> Result<boo
         return Ok(false);
     }
 
-    ng.add_literal(
-        lit,
-        expr.index,
-        expr.report,
-        expr.highlander,
-        expr.som,
-        expr.quiet,
-    )
+    unsafe {
+        ng.as_mut().get_unchecked_mut().add_literal(
+            lit,
+            expr.index,
+            expr.report,
+            expr.highlander,
+            expr.som,
+            expr.quiet,
+        )
+    }
 }

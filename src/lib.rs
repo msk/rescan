@@ -6,6 +6,7 @@ mod parser;
 mod rose;
 mod runtime;
 mod scratch;
+mod smallwrite;
 mod som;
 mod util;
 
@@ -21,6 +22,7 @@ pub use scratch::Scratch;
 pub use util::compile_error::{CompileError, ErrorKind};
 use util::CompileContext;
 
+pub(crate) use smallwrite::SmallWriteBuild;
 pub(crate) use som::SomType;
 
 /// Compile mode.
