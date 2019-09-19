@@ -1,5 +1,7 @@
 use std::ops::{Add, BitAnd};
 
+pub type S64a = i64;
+
 /// Report identifier.
 ///
 /// Used for internal IDs and external IDs (those reported on match).

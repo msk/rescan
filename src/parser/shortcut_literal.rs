@@ -68,5 +68,12 @@ pub(crate) fn shortcut_literal(ng: &mut Ng, pe: &ParsedExpression) -> Result<boo
         return Ok(false);
     }
 
-    ng.add_literal(lit, expr.index, expr.report, expr.highlander)
+    ng.add_literal(
+        lit,
+        expr.index,
+        expr.report,
+        expr.highlander,
+        expr.som,
+        expr.quiet,
+    )
 }

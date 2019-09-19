@@ -1,6 +1,7 @@
-use crate::{CompileError, Grey};
-use rescan_util::ReportId;
-use std::collections::{hash_map::Entry, HashMap};
+use crate::util::Report;
+use crate::{CompileError, ErrorKind, Grey};
+use rescan_util::{ReportId, S64a};
+use std::collections::{hash_map::Entry, BTreeMap, HashMap};
 
 #[derive(Clone, Copy)]
 pub(crate) struct ExternalReportInfo {
@@ -20,10 +21,19 @@ impl ExternalReportInfo {
 /// Tracks Report structures, exhaustion and dedupe keys.
 pub(crate) struct ReportManager<'a> {
     /// Grey box ref, for checking resource limits.
-    _grey: &'a Grey,
+    grey: &'a Grey,
+
+    /// Report structures, indexed by ID.
+    report_ids: Vec<Report>,
+
+    /// Mapping from Report to ID (inverse of `report_ids` vector).
+    report_id_to_internal_map: HashMap<Report, usize>,
 
     /// Mapping from external match ids to information about that id.
     external_id_map: HashMap<ReportId, ExternalReportInfo>,
+
+    /// Mapping from expression index to exhaustion key.
+    to_exhaustible_key_map: BTreeMap<S64a, u32>,
 
     /// Whether database is globally exhaustible (all patterns must b highlander
     /// for this to be `true`).
@@ -33,12 +43,43 @@ pub(crate) struct ReportManager<'a> {
 impl<'a> ReportManager<'a> {
     pub(crate) fn new(g: &'a Grey) -> Self {
         Self {
-            _grey: g,
+            grey: g,
+            report_ids: Vec::default(),
+            report_id_to_internal_map: HashMap::default(),
             external_id_map: HashMap::default(),
+            to_exhaustible_key_map: BTreeMap::default(),
             global_exhaust: true,
         }
     }
 
+    /// Fetch the ID associated with the given Report.
+    pub(crate) fn get_internal_id(&mut self, ir: &Report) -> Result<usize, CompileError> {
+        if let Some(id) = self.report_id_to_internal_map.get(ir) {
+            return Ok(*id);
+        }
+
+        // Construct a new internal report and assign it a ReportID.
+
+        if self.num_reports() >= self.grey.limit_report_count {
+            return Err(CompileError::new(
+                ErrorKind::ResourceLimit,
+                "Resource limit exceeded.",
+            ));
+        }
+
+        let size = self.report_ids.len();
+        self.report_ids.push(ir.clone());
+        self.report_id_to_internal_map.insert(ir.clone(), size);
+        Ok(size)
+    }
+
+    /// Total number of reports.
+    fn num_reports(&self) -> usize {
+        self.report_ids.len()
+    }
+
+    /// Registers an external report and validate that we are not violating
+    /// highlander constraints (which will cause an exception to be thrown).
     pub(crate) fn register_ext_report(
         &mut self,
         id: ReportId,
@@ -78,5 +119,20 @@ impl<'a> ReportManager<'a> {
             self.global_exhaust = false;
         }
         Ok(())
+    }
+
+    /// Fetch the ekey associated with the given expression index, assigning one
+    /// if necessary.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the expression index is larger than `u32::max_value()`.
+    pub(crate) fn get_exhaustible_key(&mut self, a: u32) -> u32 {
+        if self.to_exhaustible_key_map.len() > u32::max_value() as usize {
+            panic!("too may expressions");
+        }
+        #[allow(clippy::cast_possible_truncation)]
+        let size = self.to_exhaustible_key_map.len() as u32;
+        *self.to_exhaustible_key_map.entry(a.into()).or_insert(size)
     }
 }

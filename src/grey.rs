@@ -6,6 +6,7 @@ pub(crate) struct Grey {
 
     pub(crate) limit_pattern_count: usize,
     pub(crate) limit_pattern_length: usize,
+    pub(crate) limit_report_count: usize,
 }
 
 impl Default for Grey {
@@ -15,6 +16,7 @@ impl Default for Grey {
             shortcut_literals: true,
             limit_pattern_count: 8_000_000,
             limit_pattern_length: 16_000,
+            limit_report_count: 4 * 8_000_000,
         }
     }
 }

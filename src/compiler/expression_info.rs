@@ -27,5 +27,9 @@ pub(crate) struct ExpressionInfo {
     /// Prefiltering pattern. (`HS_FLAG_PREFILTER`)
     pub(super) prefilter: bool,
 
+    /// Start-of-match type requested, or SOM_NONE.
     pub(crate) som: SomType,
+
+    /// Quiet on match.
+    pub(crate) quiet: bool,
 }

@@ -1,9 +1,8 @@
 use crate::compiler::ExpressionInfo;
 use crate::nfagraph::NgHolder;
 use crate::rose::RoseBuild;
-use crate::util::{CompileContext, ExternalReportInfo, ReportManager};
-use crate::CompileError;
-use crate::SomType;
+use crate::util::{make_e_callback, CompileContext, ExternalReportInfo, ReportManager};
+use crate::{CompileError, SomType};
 use rescan_util::{mixed_sensitivity, Ue2Literal};
 
 pub(crate) struct Ng<'a> {
@@ -34,6 +33,8 @@ impl<'a> Ng<'a> {
         expr_index: usize,
         external_report: u32,
         highlander: bool,
+        som: SomType,
+        quiet: bool,
     ) -> Result<bool, CompileError> {
         debug_assert!(!literal.is_empty());
 
@@ -49,10 +50,24 @@ impl<'a> Ng<'a> {
             return Ok(false);
         }
 
+        // Register external report and validate highlander constraints.
         self.rm.register_ext_report(
             external_report,
             ExternalReportInfo::new(highlander, expr_index),
         )?;
+
+        let _id = if let SomType::None = som {
+            let ekey = if highlander {
+                Some(self.rm.get_exhaustible_key(external_report))
+            } else {
+                None
+            };
+            let r = make_e_callback(external_report, 0, ekey, quiet);
+            self.rm.get_internal_id(&r)
+        } else {
+            debug_assert!(!highlander); // not allowed, checked earlier.
+            unimplemented!();
+        };
 
         Ok(false)
     }

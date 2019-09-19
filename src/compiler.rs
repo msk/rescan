@@ -32,6 +32,7 @@ impl ParsedExpression {
             utf8: false,
             prefilter: flags.contains(Flags::PREFILTER),
             som: SomType::None,
+            quiet: flags.contains(Flags::QUIET),
         };
         if flags.contains(Flags::QUIET | Flags::SOM_LEFTMOST) {
             return Err(CompileError::new(
