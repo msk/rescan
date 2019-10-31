@@ -6,7 +6,7 @@ pub(crate) struct Grey {
 
 impl Default for Grey {
     fn default() -> Self {
-        Grey {
+        Self {
             limit_pattern_count: 8_000_000,
             limit_pattern_length: 16_000,
         }

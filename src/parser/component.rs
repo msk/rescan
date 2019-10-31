@@ -15,22 +15,22 @@ impl Component {
     /// Informs the Glushkov build process of the positions used by this component.
     pub(crate) fn note_positions(&mut self, bs: &mut GlushkovBuildState) {
         match self {
-            Component::Alternation(c) => c.note_positions(bs),
-            Component::Class(c) => c.note_positions(bs),
-            Component::Sequence(c) => c.note_positions(bs),
+            Self::Alternation(c) => c.note_positions(bs),
+            Self::Class(c) => c.note_positions(bs),
+            Self::Sequence(c) => c.note_positions(bs),
         }
     }
 }
 
 impl From<ComponentClass> for Component {
     fn from(c: ComponentClass) -> Self {
-        Component::Class(c)
+        Self::Class(c)
     }
 }
 
 impl From<ComponentSequence> for Component {
     fn from(c: ComponentSequence) -> Self {
-        Component::Sequence(c)
+        Self::Sequence(c)
     }
 }
 

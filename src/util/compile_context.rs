@@ -6,6 +6,6 @@ pub(crate) struct CompileContext {
 
 impl CompileContext {
     pub(crate) fn new(grey: &Grey) -> Self {
-        CompileContext { grey: grey.clone() }
+        Self { grey: grey.clone() }
     }
 }

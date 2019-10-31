@@ -20,7 +20,7 @@ impl ComponentSequence {
         }
         let alternation = self.alternation.as_mut().expect("Some");
 
-        let mut seq = ComponentSequence::default();
+        let mut seq = Self::default();
         mem::swap(&mut self.children, &mut seq.children);
         alternation.append(seq);
     }

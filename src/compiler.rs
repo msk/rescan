@@ -29,7 +29,7 @@ impl ParsedExpression {
 
         expr.utf8 = mode.utf8; // utf8 may be set by parse()
 
-        Ok(ParsedExpression { expr, component })
+        Ok(Self { expr, component })
     }
 }
 

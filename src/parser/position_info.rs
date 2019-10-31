@@ -8,7 +8,7 @@ pub(crate) struct PositionInfo {
 
 impl From<Position> for PositionInfo {
     fn from(pos: Position) -> Self {
-        PositionInfo {
+        Self {
             pos,
             flags: PosFlags::default(),
         }

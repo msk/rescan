@@ -6,7 +6,7 @@ pub struct Database {
 
 impl Database {
     pub(crate) fn new(rose: RoseEngine) -> Self {
-        Database { rose }
+        Self { rose }
     }
 }
 

@@ -10,7 +10,7 @@ pub(crate) struct NfaBuilder {
 impl NfaBuilder {
     fn new() -> Self {
         let graph = NgHolder::new();
-        NfaBuilder { graph }
+        Self { graph }
     }
 
     pub(crate) fn make_position(&mut self) -> Position {

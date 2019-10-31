@@ -10,7 +10,7 @@ pub(crate) struct Ng {
 
 impl Ng {
     pub(crate) fn new(cc: CompileContext) -> Self {
-        Ng {
+        Self {
             cc,
             rose: RoseBuild {},
         }

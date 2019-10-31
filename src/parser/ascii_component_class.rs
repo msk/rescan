@@ -9,7 +9,7 @@ pub(crate) struct AsciiComponentClass {
 
 impl AsciiComponentClass {
     pub(in crate::parser) fn new(mode: ParseMode) -> Self {
-        AsciiComponentClass {
+        Self {
             mode,
             cr: CharReach::default(),
         }

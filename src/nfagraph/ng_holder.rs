@@ -44,7 +44,7 @@ impl NgHolder {
         inner[start].char_reach.set_all();
         inner[start_ds].char_reach.set_all();
 
-        NgHolder {
+        Self {
             inner,
             start,
             start_ds,

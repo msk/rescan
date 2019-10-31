@@ -27,7 +27,7 @@ pub enum ErrorKind {
 
 impl CompileError {
     pub(crate) fn new<T: Into<String>>(kind: ErrorKind, why: T) -> Self {
-        CompileError {
+        Self {
             kind,
             reason: why.into(),
             index: None,

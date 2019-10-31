@@ -26,7 +26,7 @@ pub(crate) enum ComponentClass {
 impl ComponentClass {
     fn add(&mut self, c: char) -> Result<(), CompileError> {
         match self {
-            ComponentClass::Ascii(cc) => {
+            Self::Ascii(cc) => {
                 if c > '\u{ff}' {
                     return Err(CompileError::new(
                         ErrorKind::LocatedParse,
@@ -42,7 +42,7 @@ impl ComponentClass {
     /// Informs the Glushkov build process of the positions used by this component.
     pub(in crate::parser) fn note_positions(&mut self, bs: &mut GlushkovBuildState) {
         match self {
-            ComponentClass::Ascii(c) => c.note_positions(bs),
+            Self::Ascii(c) => c.note_positions(bs),
         }
     }
 }
