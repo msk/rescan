@@ -20,6 +20,7 @@ struct Ue2LiteralIter<'a> {
 }
 
 impl Ue2Literal {
+    #[must_use]
     pub fn is_empty(&self) -> bool {
         self.s.is_empty()
     }
@@ -53,12 +54,14 @@ impl<'a> Iterator for Ue2LiteralIter<'a> {
 }
 
 impl PartialEq for Ue2Literal {
+    #[must_use]
     fn eq(&self, other: &Ue2Literal) -> bool {
         self.s == other.s
     }
 }
 
 impl Ord for Ue2Literal {
+    #[must_use]
     fn cmp(&self, other: &Ue2Literal) -> Ordering {
         let ordering = self.s.cmp(&other.s);
         if ordering == Ordering::Equal {
@@ -70,6 +73,7 @@ impl Ord for Ue2Literal {
 }
 
 impl PartialOrd for Ue2Literal {
+    #[must_use]
     fn partial_cmp(&self, other: &Ue2Literal) -> Option<Ordering> {
         Some(self.cmp(other))
     }
@@ -95,6 +99,7 @@ where
     nc && cs
 }
 
+#[must_use]
 pub fn mixed_sensitivity(s: &Ue2Literal) -> bool {
     mixed_sensitivity_in(s.iter())
 }

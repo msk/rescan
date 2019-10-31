@@ -14,6 +14,7 @@ pub struct CharReach {
 
 impl CharReach {
     /// Constructs a character class containing a single 8-bit character.
+    #[must_use]
     pub fn from_char(c: u8) -> Self {
         let mut cr = CharReach::default();
         cr.set(c);
@@ -26,6 +27,7 @@ impl CharReach {
     /// # Panics
     ///
     /// Panics if `from > to`.
+    #[must_use]
     pub fn from_range(from: u8, to: u8) -> Self {
         let mut cr = CharReach::default();
         cr.set_range(from, to);
@@ -33,6 +35,7 @@ impl CharReach {
     }
 
     /// Constructs a character class based on the set of chars in a byte slice.
+    #[must_use]
     pub fn from_bytes(bytes: &[u8]) -> Self {
         let mut cr = CharReach::default();
         cr.set_bytes(bytes);
@@ -40,6 +43,7 @@ impl CharReach {
     }
 
     /// Constructs a character class with complete reachability (a "dot").
+    #[must_use]
     pub fn dot() -> Self {
         Self::from_range(0, 255)
     }
@@ -65,6 +69,7 @@ impl CharReach {
     }
 
     /// Tests bit for `c`.
+    #[must_use]
     pub fn test(&self, c: u8) -> bool {
         self.bits.test(c)
     }
@@ -96,46 +101,55 @@ impl CharReach {
     }
 
     /// Returns number of bits set on.
+    #[must_use]
     pub fn count(&self) -> u32 {
         self.bits.count()
     }
 
     /// Returns `true` if no bit is set.
+    #[must_use]
     pub fn none(&self) -> bool {
         self.bits.none()
     }
 
     /// Retruns `true` if any bit is set.
+    #[must_use]
     pub fn any(&self) -> bool {
         self.bits.any()
     }
 
     /// Returns `true` if all bits are set.
+    #[must_use]
     pub fn all(&self) -> bool {
         self.bits.all()
     }
 
     /// Returns first bit set.
+    #[must_use]
     pub fn find_first(&self) -> Option<u8> {
         self.bits.find_first()
     }
 
     /// Returns last bit set.
+    #[must_use]
     pub fn find_last(&self) -> Option<u8> {
         self.bits.find_last()
     }
 
     /// Returns next bit set
+    #[must_use]
     pub fn find_next(&self, last: u8) -> Option<u8> {
         self.bits.find_next(last)
     }
 
     /// Returns (zero-based) `n`-th bit set.
+    #[must_use]
     pub fn find_nth(&self, n: u8) -> Option<u8> {
         self.bits.find_nth(n)
     }
 
     /// Checks if this only contain bits representing alphabet characters.
+    #[must_use]
     pub fn is_alphabetic(&self) -> bool {
         if self.none() {
             return false;
@@ -151,6 +165,7 @@ impl CharReach {
     }
 
     /// Checks if this represents an uppercase/lowercase pair.
+    #[must_use]
     pub fn is_caseless_char(&self) -> bool {
         if self.count() != 2 {
             return false;
@@ -161,6 +176,7 @@ impl CharReach {
     }
 
     /// Checks if this represents a cheapskate caseless set.
+    #[must_use]
     pub fn is_bit5_insensitive(&self) -> bool {
         let mut next = self.find_first();
         while let Some(pos) = next {
@@ -173,22 +189,26 @@ impl CharReach {
     }
 
     /// Checks if this character class is a subset of `rhs`.
+    #[must_use]
     pub fn is_subset_of(&self, rhs: &Self) -> bool {
         (self.bits & rhs.bits) == self.bits
     }
 
     /// Checks if there is a non-empty intersection between this and `rhs`.
+    #[must_use]
     pub fn overlaps(&self, rhs: &Self) -> bool {
         (*self & *rhs).any()
     }
 
     /// Checks if this character class is within the ASCII range.
+    #[must_use]
     pub fn is_ascii(&self) -> bool {
         (*self & !Self::from_range(0x00, 0x7f)).none()
     }
 
     /// Check is this character class represents the first bytes of multi-byte
     /// UTF-8 characters.
+    #[must_use]
     pub fn is_utf8_start(&self) -> bool {
         (*self & Self::from_range(0x00, UTF_CONT_MAX)).none()
     }
@@ -210,6 +230,7 @@ impl BitAnd for CharReach {
     type Output = Self;
 
     #[inline]
+    #[must_use]
     fn bitand(self, rhs: Self) -> Self::Output {
         let mut rhs = rhs;
         rhs &= self;
@@ -228,6 +249,7 @@ impl BitOr for CharReach {
     type Output = Self;
 
     #[inline]
+    #[must_use]
     fn bitor(self, rhs: Self) -> Self::Output {
         let mut rhs = rhs;
         rhs |= self;
@@ -246,6 +268,7 @@ impl BitXor for CharReach {
     type Output = Self;
 
     #[inline]
+    #[must_use]
     fn bitxor(self, rhs: Self) -> Self::Output {
         let mut rhs = rhs;
         rhs ^= self;
@@ -264,6 +287,7 @@ impl Not for CharReach {
     type Output = Self;
 
     #[inline]
+    #[must_use]
     fn not(mut self) -> Self::Output {
         self.bits = !self.bits;
         self
@@ -301,6 +325,7 @@ pub fn fill_bitvector(cr: &CharReach, bits: &mut [u8]) {
 /// `(and_mask, cmp_mask)` is the return value of this function.
 ///
 /// Note: characters not in `cr` may also pass the and/cmp checks.
+#[must_use]
 pub fn make_and_cmp_mask(cr: &CharReach) -> (u8, u8) {
     let mut lo = 0xff;
     let mut hi = 0x00;
