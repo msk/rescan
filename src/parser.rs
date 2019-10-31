@@ -179,7 +179,7 @@ pub(crate) fn parse(ptr: &str, global_mode: &mut ParseMode) -> Result<Component,
 }
 
 fn take_any(input: &str) -> IResult<&str, char> {
-    take(1usize)(input).map(|(input, c)| {
+    take(1_usize)(input).map(|(input, c)| {
         let c = c
             .chars()
             .next()
