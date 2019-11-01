@@ -146,7 +146,7 @@ impl BitField256 {
 
     /// Returns next bit set.
     pub(crate) fn find_next(&self, last: u8) -> Option<u8> {
-        let mut last_i = BitField256::get_word(last);
+        let mut last_i = Self::get_word(last);
         let mut last_word = self.bits[last_i as usize];
 
         if last % BLOCK_SIZE != BLOCK_SIZE - 1 {

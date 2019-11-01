@@ -55,14 +55,14 @@ impl<'a> Iterator for Ue2LiteralIter<'a> {
 
 impl PartialEq for Ue2Literal {
     #[must_use]
-    fn eq(&self, other: &Ue2Literal) -> bool {
+    fn eq(&self, other: &Self) -> bool {
         self.s == other.s
     }
 }
 
 impl Ord for Ue2Literal {
     #[must_use]
-    fn cmp(&self, other: &Ue2Literal) -> Ordering {
+    fn cmp(&self, other: &Self) -> Ordering {
         let ordering = self.s.cmp(&other.s);
         if ordering == Ordering::Equal {
             self.nocase.cmp(&other.nocase)
@@ -74,7 +74,7 @@ impl Ord for Ue2Literal {
 
 impl PartialOrd for Ue2Literal {
     #[must_use]
-    fn partial_cmp(&self, other: &Ue2Literal) -> Option<Ordering> {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
         Some(self.cmp(other))
     }
 }

@@ -16,7 +16,7 @@ impl CharReach {
     /// Constructs a character class containing a single 8-bit character.
     #[must_use]
     pub fn from_char(c: u8) -> Self {
-        let mut cr = CharReach::default();
+        let mut cr = Self::default();
         cr.set(c);
         cr
     }
@@ -29,7 +29,7 @@ impl CharReach {
     /// Panics if `from > to`.
     #[must_use]
     pub fn from_range(from: u8, to: u8) -> Self {
-        let mut cr = CharReach::default();
+        let mut cr = Self::default();
         cr.set_range(from, to);
         cr
     }
@@ -37,7 +37,7 @@ impl CharReach {
     /// Constructs a character class based on the set of chars in a byte slice.
     #[must_use]
     pub fn from_bytes(bytes: &[u8]) -> Self {
-        let mut cr = CharReach::default();
+        let mut cr = Self::default();
         cr.set_bytes(bytes);
         cr
     }
