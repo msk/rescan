@@ -1,16 +1,13 @@
 use crate::round_up_n;
-use std::mem::size_of;
 use std::ops::{BitAnd, BitAndAssign, BitOr, BitOrAssign, BitXor, BitXorAssign, Not};
 
-type BlockType = u64;
-
-const BLOCK_SIZE: u8 = size_of::<BlockType>() as u8 * 8;
-const ALL_ONES: BlockType = !0;
+const BLOCK_SIZE: u8 = 64; // size_of::<BlockType>() * 8;
+const ALL_ONES: u64 = !0;
 
 /// Bitset class for 256 elements with `find_first` and `find_next` operations.
 #[derive(Clone, Copy, Debug, Default, Eq, Hash, Ord, PartialOrd, PartialEq)]
 pub(crate) struct BitField256 {
-    bits: [BlockType; 4],
+    bits: [u64; 4],
 }
 
 impl BitField256 {
@@ -128,6 +125,7 @@ impl BitField256 {
     pub(crate) fn find_first(&self) -> Option<u8> {
         for (i, &bits) in self.bits.iter().enumerate() {
             if bits != 0 {
+                #[allow(clippy::cast_possible_truncation)]
                 return Some(i as u8 * BLOCK_SIZE + bits.trailing_zeros() as u8);
             }
         }
@@ -138,6 +136,7 @@ impl BitField256 {
     pub(crate) fn find_last(&self) -> Option<u8> {
         for (i, &bits) in self.bits.iter().enumerate().rev() {
             if bits != 0 {
+                #[allow(clippy::cast_possible_truncation)]
                 return Some(i as u8 * BLOCK_SIZE + (BLOCK_SIZE - 1) - bits.leading_zeros() as u8);
             }
         }
@@ -153,6 +152,7 @@ impl BitField256 {
             last_word &= ALL_ONES << (last % BLOCK_SIZE + 1);
 
             if last_word != 0 {
+                #[allow(clippy::cast_possible_truncation)]
                 return Some(last_i * BLOCK_SIZE + last_word.trailing_zeros() as u8);
             }
         }
@@ -160,6 +160,7 @@ impl BitField256 {
         last_i += 1;
         for (i, &bits) in self.bits[last_i as usize..].iter().enumerate() {
             if bits != 0 {
+                #[allow(clippy::cast_possible_truncation)]
                 return Some((last_i + i as u8) * BLOCK_SIZE + bits.trailing_zeros() as u8);
             }
         }
@@ -180,6 +181,7 @@ impl BitField256 {
                     block &= block - 1;
                 }
                 debug_assert!(block > 0);
+                #[allow(clippy::cast_possible_truncation)]
                 let bit = i as u8 * BLOCK_SIZE + block.trailing_zeros() as u8;
                 debug_assert!(self.test(bit));
                 return Some(bit);
@@ -195,8 +197,8 @@ impl BitField256 {
         n / BLOCK_SIZE
     }
 
-    fn mask_bit(n: u8) -> BlockType {
-        (1 as BlockType) << (n % BLOCK_SIZE)
+    fn mask_bit(n: u8) -> u64 {
+        1_u64 << (n % BLOCK_SIZE)
     }
 }
 
