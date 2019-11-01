@@ -13,7 +13,7 @@ impl ComponentAlternation {
 
     /// Informs the Glushkov build process of the positions used by this component.
     pub(super) fn note_positions(&mut self, bs: &mut GlushkovBuildState) {
-        for c in self.children.iter_mut() {
+        for c in &mut self.children {
             c.note_positions(bs);
         }
     }

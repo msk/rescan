@@ -66,7 +66,7 @@ impl<'a> GlushkovBuildState<'a> {
 
         let succ = self.successors.entry(from.pos).or_insert_with(HashSet::new);
 
-        for to in tolist.iter() {
+        for to in &tolist {
             succ.insert(*to);
         }
     }
