@@ -7,7 +7,7 @@ type BlockType = u64;
 const BLOCK_SIZE: u8 = size_of::<BlockType>() as u8 * 8;
 const ALL_ONES: BlockType = !0;
 
-/// Bitset class for 256 elements with find_first and find_next operations.
+/// Bitset class for 256 elements with `find_first` and `find_next` operations.
 #[derive(Clone, Copy, Debug, Default, Eq, Hash, Ord, PartialOrd, PartialEq)]
 pub(crate) struct BitField256 {
     bits: [BlockType; 4],

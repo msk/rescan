@@ -303,7 +303,7 @@ pub fn make_caseless(cr: &mut CharReach) {
     }
 }
 
-/// Fills a bitvector with the contents of the given CharReach.
+/// Fills a bitvector with the contents of the given `CharReach`.
 ///
 /// # Panics
 ///
