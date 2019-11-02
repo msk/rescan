@@ -1,18 +1,19 @@
 mod expression_info;
 
+pub(crate) use expression_info::ExpressionInfo;
+
 use crate::database::Database;
 use crate::nfagraph::{make_nfa_builder, Ng, NgHolder};
 use crate::parser::{
     make_glushkov_build_state, parse, prefilter_tree, shortcut_literal, Component, ParseMode,
 };
 use crate::rose::RoseEngine;
-use crate::Flags;
 use crate::{CompileError, ErrorKind};
-use expression_info::ExpressionInfo;
+use crate::{Flags, SomType};
 use rescan_util::ReportId;
 
 pub(crate) struct ParsedExpression {
-    expr: ExpressionInfo,
+    pub(crate) expr: ExpressionInfo,
     pub(crate) component: Component,
 }
 
@@ -21,6 +22,7 @@ impl ParsedExpression {
         let mut expr = ExpressionInfo {
             utf8: false,
             prefilter: flags.contains(Flags::PREFILTER),
+            som: SomType::None,
         };
         if flags.contains(Flags::QUIET | Flags::SOM_LEFTMOST) {
             return Err(CompileError::new(
@@ -40,6 +42,7 @@ impl ParsedExpression {
 }
 
 pub(crate) struct BuiltExpression {
+    pub(crate) expr: ExpressionInfo,
     pub(crate) g: NgHolder,
 }
 
@@ -74,7 +77,7 @@ pub(crate) fn add_expression(
 
     let build_expr = build_graph(&mut pe);
 
-    ng.add_graph(&build_expr.g);
+    ng.add_graph(&build_expr.expr, &build_expr.g);
 
     Ok(())
 }
@@ -94,7 +97,7 @@ pub(crate) fn build(ng: &Ng) -> Database {
 }
 
 pub(crate) fn build_graph(pe: &mut ParsedExpression) -> BuiltExpression {
-    let mut builder = make_nfa_builder();
+    let mut builder = make_nfa_builder(pe);
 
     let mut bs = make_glushkov_build_state(&mut builder);
 

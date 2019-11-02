@@ -1,16 +1,20 @@
-use crate::compiler::BuiltExpression;
+use crate::compiler::{BuiltExpression, ExpressionInfo, ParsedExpression};
 use crate::nfagraph::{NfaVertex, NgHolder};
 use crate::parser::{PosFlags, Position};
 use rescan_util::CharReach;
 
 pub(crate) struct NfaBuilder {
     graph: NgHolder,
+    expr: ExpressionInfo,
 }
 
 impl NfaBuilder {
-    fn new() -> Self {
+    fn new(parsed: &ParsedExpression) -> Self {
         let graph = NgHolder::new();
-        Self { graph }
+        Self {
+            graph,
+            expr: parsed.expr.clone(),
+        }
     }
 
     pub(crate) fn make_position(&mut self) -> Position {
@@ -51,10 +55,13 @@ impl NfaBuilder {
     }
 
     pub(crate) fn get_graph(self) -> BuiltExpression {
-        BuiltExpression { g: self.graph }
+        BuiltExpression {
+            expr: self.expr,
+            g: self.graph,
+        }
     }
 }
 
-pub(crate) fn make_nfa_builder() -> NfaBuilder {
-    NfaBuilder::new()
+pub(crate) fn make_nfa_builder(expr: &ParsedExpression) -> NfaBuilder {
+    NfaBuilder::new(expr)
 }

@@ -6,6 +6,7 @@ mod parser;
 mod rose;
 mod runtime;
 mod scratch;
+mod som;
 mod util;
 
 use bitflags::bitflags;
@@ -19,6 +20,8 @@ pub use runtime::{scan, Error};
 pub use scratch::Scratch;
 pub use util::compile_error::{CompileError, ErrorKind};
 use util::CompileContext;
+
+pub(crate) use som::SomType;
 
 /// Compile mode.
 ///
