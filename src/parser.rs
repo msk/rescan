@@ -140,7 +140,8 @@ impl<'p> Context<'p> {
             // TODO: Support UTF-8 literals
             assert!(c.is_ascii());
             if let Err(mut e) = add_literal(&mut self.current_seq, c, self.mode) {
-                e.reason = e.reason + &format!(" at index {}", self.ptr.len() - self.p.len());
+                e.reason
+                    .push_str(&format!(" at index {}", self.ptr.len() - self.p.len()));
                 return Err(e);
             }
             self.p = p
