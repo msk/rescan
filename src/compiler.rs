@@ -17,7 +17,7 @@ pub(crate) struct ParsedExpression {
 }
 
 impl ParsedExpression {
-    fn new(_index: u32, expression: &str, flags: Flags) -> Result<Self, CompileError> {
+    fn new(_index: usize, expression: &str, flags: Flags) -> Result<Self, CompileError> {
         let mut expr = ExpressionInfo {
             utf8: false,
             prefilter: flags.contains(Flags::PREFILTER),
@@ -45,7 +45,7 @@ pub(crate) struct BuiltExpression {
 
 pub(crate) fn add_expression(
     ng: &mut Ng,
-    index: u32,
+    index: usize,
     expression: &str,
     flags: Flags,
     _id: ReportId,
