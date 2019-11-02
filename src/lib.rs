@@ -44,12 +44,12 @@ impl Mode {
     /// Returns the number of bytes of SOM precision.
     fn som_precision(&self) -> usize {
         match self {
-            Mode::Stream(Some(horizon)) => match horizon {
+            Self::Stream(Some(horizon)) => match horizon {
                 SomHorizon::Large => 8,
                 SomHorizon::Medium => 4,
                 SomHorizon::Small => 2,
             },
-            Mode::Vectored => 8,
+            Self::Vectored => 8,
             _ => 0,
         }
     }
