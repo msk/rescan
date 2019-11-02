@@ -20,9 +20,19 @@ pub use scratch::Scratch;
 pub use util::compile_error::{CompileError, ErrorKind};
 use util::CompileContext;
 
+/// Compile mode.
+///
+/// The mode is used as the mode parameter of the various compile calls
+/// ([`compile`][`compile`] and [`compile_multi`][`compile_multi`]).
+///
+/// [`compile`]: fn.compile.html
+/// [`compile_multi`]: fn.compile_multi.html
 pub enum Mode {
+    /// Block scan database.
     Block,
+    /// Streaming database.
     Stream(Option<SomHorizon>),
+    /// Vectored scanning database.
     Vectored,
 }
 
