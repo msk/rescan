@@ -26,6 +26,22 @@ pub enum Mode {
     Vectored,
 }
 
+impl Mode {
+    fn is_streaming(&self) -> bool {
+        match self {
+            Self::Stream(_) | Self::Vectored => true,
+            _ => false,
+        }
+    }
+
+    fn is_vectored(&self) -> bool {
+        match self {
+            Self::Vectored => true,
+            _ => false,
+        }
+    }
+}
+
 pub enum SomHorizon {
     Large,
     Medium,
@@ -51,7 +67,7 @@ fn compile_multi_int(
     expressions: &[&str],
     flags: &[Flags],
     ids: &[ReportId],
-    _mode: Mode,
+    mode: Mode,
     g: &Grey,
 ) -> Result<Database, CompileError> {
     if expressions.is_empty() {
@@ -68,7 +84,10 @@ fn compile_multi_int(
         ));
     }
 
-    let cc = CompileContext::new(g);
+    let is_streaming = mode.is_streaming();
+    let is_vectored = mode.is_vectored();
+
+    let cc = CompileContext::new(is_streaming, is_vectored, g);
     let mut ng = Ng::new(cc);
 
     for (i, (exp, &fl, &id)) in izip!(expressions, flags, ids).enumerate() {
