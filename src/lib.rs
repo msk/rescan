@@ -40,6 +40,19 @@ impl Mode {
             _ => false,
         }
     }
+
+    /// Returns the number of bytes of SOM precision.
+    fn som_precision(&self) -> usize {
+        match self {
+            Mode::Stream(Some(horizon)) => match horizon {
+                SomHorizon::Large => 8,
+                SomHorizon::Medium => 4,
+                SomHorizon::Small => 2,
+            },
+            Mode::Vectored => 8,
+            _ => 0,
+        }
+    }
 }
 
 pub enum SomHorizon {
@@ -86,9 +99,10 @@ fn compile_multi_int(
 
     let is_streaming = mode.is_streaming();
     let is_vectored = mode.is_vectored();
+    let som_precision = mode.som_precision();
 
     let cc = CompileContext::new(is_streaming, is_vectored, g);
-    let mut ng = Ng::new(cc);
+    let mut ng = Ng::new(cc, expressions.len(), som_precision);
 
     for (i, (exp, &fl, &id)) in izip!(expressions, flags, ids).enumerate() {
         let expression_index = i as u32;

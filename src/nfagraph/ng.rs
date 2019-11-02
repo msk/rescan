@@ -9,7 +9,7 @@ pub(crate) struct Ng {
 }
 
 impl Ng {
-    pub(crate) fn new(cc: CompileContext) -> Self {
+    pub(crate) fn new(cc: CompileContext, _num_patterns: usize, _som_precision: usize) -> Self {
         Self {
             cc,
             rose: RoseBuild {},
