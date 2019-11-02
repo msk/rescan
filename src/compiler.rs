@@ -22,6 +22,12 @@ impl ParsedExpression {
             utf8: false,
             prefilter: flags.contains(Flags::PREFILTER),
         };
+        if flags.contains(Flags::QUIET | Flags::SOM_LEFTMOST) {
+            return Err(CompileError::new(
+                ErrorKind::Other,
+                "QUIET is not supported in combination with SOM_LEFTMOST.",
+            ));
+        }
         let flags = flags & !Flags::QUIET;
         let mut mode = ParseMode::new(flags);
 
