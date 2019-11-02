@@ -102,7 +102,6 @@ fn compile_multi_int(
 }
 
 bitflags! {
-    #[derive(Default)]
     pub struct Flags : u16 {
         const CASELESS = 0x0001;
         const DOTALL = 0x0002;
@@ -126,7 +125,7 @@ mod tests {
 
     #[test]
     fn compile_single() {
-        assert!(super::compile("foobar", super::Flags::default(), Mode::Block).is_ok());
+        assert!(super::compile("foobar", super::Flags::empty(), Mode::Block).is_ok());
     }
 
     #[test]
