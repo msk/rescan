@@ -27,6 +27,10 @@ impl Ng {
     pub(crate) fn add_literal(&self, literal: &Ue2Literal) -> bool {
         debug_assert!(!literal.is_empty());
 
+        if !self.cc.grey.shortcut_literals {
+            return false;
+        }
+
         if mixed_sensitivity(literal) {
             return false;
         }
