@@ -6,7 +6,7 @@ use std::ops::{BitAnd, BitAndAssign, BitOr, BitOrAssign, BitXor, BitXorAssign, N
 ///
 /// This is a simple (but hopefully fast) struct for representing 8-bit
 /// character reachability, along with a bunch of useful operations.
-#[derive(Copy, Clone, Default, Eq, Hash, PartialEq, PartialOrd, Ord)]
+#[derive(Copy, Clone, Debug, Default, Eq, Hash, PartialEq, PartialOrd, Ord)]
 pub struct CharReach {
     /// Underlying storage.
     bits: BitField256,

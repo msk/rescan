@@ -2,6 +2,7 @@ use crate::parser::*;
 use rescan_util::{make_caseless, CharReach};
 
 /// Character classes and their mnemonics.
+#[derive(Debug)]
 pub(crate) struct AsciiComponentClass {
     mode: ParseMode,
     pub(in crate::parser) cr: CharReach,

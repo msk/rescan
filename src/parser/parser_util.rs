@@ -1,6 +1,6 @@
 use crate::Flags;
 
-#[derive(Clone, Copy, Default)]
+#[derive(Clone, Copy, Debug, Default)]
 pub(crate) struct ParseMode {
     pub(crate) caseless: bool,
     pub(crate) ucp: bool,

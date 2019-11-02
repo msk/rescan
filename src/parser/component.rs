@@ -5,6 +5,7 @@ use super::GlushkovBuildState;
 use super::{ComponentAlternation, ComponentClass, ComponentSequence, ConstComponentVisitor};
 
 /// A component for a regular expression parse tree.
+#[derive(Debug)]
 pub(crate) enum Component {
     Alternation(ComponentAlternation),
     Class(ComponentClass),

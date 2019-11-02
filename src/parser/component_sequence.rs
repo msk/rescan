@@ -3,7 +3,7 @@ use super::{
 };
 use std::mem;
 
-#[derive(Default)]
+#[derive(Debug, Default)]
 pub(crate) struct ComponentSequence {
     children: Vec<Component>,
     alternation: Option<ComponentAlternation>,

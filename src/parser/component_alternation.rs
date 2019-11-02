@@ -1,7 +1,7 @@
 use super::component_sequence::walk_component_sequence;
 use super::{ComponentSequence, ConstComponentVisitor, GlushkovBuildState};
 
-#[derive(Default)]
+#[derive(Debug, Default)]
 pub(crate) struct ComponentAlternation {
     children: Vec<ComponentSequence>,
 }

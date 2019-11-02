@@ -19,6 +19,7 @@ pub(in crate::parser) fn get_literal_component_class(
     Ok(cc)
 }
 
+#[derive(Debug)]
 pub(crate) enum ComponentClass {
     Ascii(AsciiComponentClass),
 }
