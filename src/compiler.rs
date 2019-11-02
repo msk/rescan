@@ -74,7 +74,7 @@ pub(crate) fn add_expression(
 
     let build_expr = build_graph(&mut pe);
 
-    ng.add_graph(build_expr.g);
+    ng.add_graph(&build_expr.g);
 
     Ok(())
 }

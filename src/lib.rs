@@ -72,7 +72,7 @@ pub enum SomHorizon {
 }
 
 /// Compiles a regular expression.
-pub fn compile(expression: &str, flags: Flags, mode: Mode) -> Result<Database, CompileError> {
+pub fn compile(expression: &str, flags: Flags, mode: &Mode) -> Result<Database, CompileError> {
     compile_multi_int(&[expression], &[flags], &[0], mode, &Grey::default())
 }
 
@@ -81,7 +81,7 @@ pub fn compile_multi(
     expressions: &[&str],
     flags: &[Flags],
     ids: &[ReportId],
-    mode: Mode,
+    mode: &Mode,
 ) -> Result<Database, CompileError> {
     compile_multi_int(expressions, flags, ids, mode, &Grey::default())
 }
@@ -90,7 +90,7 @@ fn compile_multi_int(
     expressions: &[&str],
     flags: &[Flags],
     ids: &[ReportId],
-    mode: Mode,
+    mode: &Mode,
     g: &Grey,
 ) -> Result<Database, CompileError> {
     if expressions.is_empty() {
@@ -146,11 +146,11 @@ mod tests {
 
     #[test]
     fn compile_single() {
-        assert!(super::compile("foobar", super::Flags::empty(), Mode::Block).is_ok());
+        assert!(super::compile("foobar", super::Flags::empty(), &Mode::Block).is_ok());
     }
 
     #[test]
     fn compile_multi_int_empty_input() {
-        assert!(super::compile_multi_int(&[], &[], &[], Mode::Block, &Grey::default()).is_err());
+        assert!(super::compile_multi_int(&[], &[], &[], &Mode::Block, &Grey::default()).is_err());
     }
 }
