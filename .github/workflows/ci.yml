@@ -46,4 +46,4 @@ jobs:
       run: cargo fmt --all -- --check
     - name: Clippy
       if: matrix.os == 'ubuntu-18.04' && matrix.rust == 'stable'
-      run: cargo clippy --all -- -D warnings -A clippy::pedantic
+      run: cargo clippy --all -- -D warnings -W clippy::pedantic
