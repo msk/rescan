@@ -8,12 +8,12 @@ pub struct Ue2Literal {
     nocase: BitVec,
 }
 
-struct Ue2LiteralElem {
-    c: u8,
+pub struct Ue2LiteralElem {
+    pub c: u8,
     nocase: bool,
 }
 
-struct Ue2LiteralIter<'a> {
+pub struct Ue2LiteralIter<'a> {
     lit: &'a Ue2Literal,
     idx: usize,
 }
@@ -29,8 +29,12 @@ impl Ue2Literal {
         self.s.is_empty()
     }
 
+    pub fn any_nocase(&self) -> bool {
+        self.nocase.any()
+    }
+
     #[must_use]
-    fn iter(&self) -> Ue2LiteralIter {
+    pub fn iter(&self) -> Ue2LiteralIter {
         Ue2LiteralIter { lit: self, idx: 0 }
     }
 

@@ -108,7 +108,7 @@ impl<'a> Ng<'a> {
         );
 
         // Inform small write handler about this literal.
-        //self.smwr.add(literal, id);
+        self.smwr.add_literal(literal, id);
 
         Ok(false)
     }

@@ -1,14 +1,17 @@
-use petgraph::graph::{DefaultIx, NodeIndex};
-use petgraph::Graph;
-use std::ops::{Index, IndexMut};
-
 use crate::parser::PosFlags;
-use rescan_util::CharReach;
+use petgraph::graph::{DefaultIx, NodeIndex};
+use petgraph::{Direction, Graph};
+use rescan_util::{CharReach, ReportId};
+use std::collections::HashSet;
+use std::ops::{Index, IndexMut};
 
 #[derive(Default)]
 pub(crate) struct NfaGraphVertexProps {
     /// Set of characters on which this vertex is reachable.
     pub(in crate::nfagraph) char_reach: CharReach,
+
+    /// Set of reports raised by this vertex.
+    pub(super) reports: HashSet<ReportId>,
 
     /// Flags associated with assertions.
     pub(in crate::nfagraph) assert_flags: PosFlags,
@@ -60,6 +63,23 @@ impl NgHolder {
 
     pub(in crate::nfagraph) fn num_vertices(&self) -> usize {
         self.inner.node_count()
+    }
+
+    /// Returns the set of all reports in the graph.
+    pub(crate) fn all_reports(&self) -> HashSet<ReportId> {
+        let reports = self
+            .inner
+            .neighbors_directed(self.accept, Direction::Incoming)
+            .fold(HashSet::new(), |mut union, v| {
+                union.extend(&self.inner[v].reports);
+                union
+            });
+        self.inner
+            .neighbors_directed(self.accept_eod, Direction::Incoming)
+            .fold(reports, |mut union, v| {
+                union.extend(&self.inner[v].reports);
+                union
+            })
     }
 
     // Miscellaneous NFA graph utilities.

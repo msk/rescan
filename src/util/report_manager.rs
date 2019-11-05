@@ -52,7 +52,7 @@ impl<'a> ReportManager<'a> {
         }
     }
 
-    /// Fetch the ID associated with the given Report.
+    /// Fetches the ID associated with the given Report.
     pub(crate) fn get_internal_id(&mut self, ir: &Report) -> Result<u32, CompileError> {
         if let Some(id) = self.report_id_to_internal_map.get(ir) {
             return Ok(*id);
@@ -72,6 +72,15 @@ impl<'a> ReportManager<'a> {
         self.report_ids.push(ir.clone());
         self.report_id_to_internal_map.insert(ir.clone(), size);
         Ok(size)
+    }
+
+    /// Fetches the Report associated with `id`.
+    ///
+    /// # Panics
+    ///
+    /// Panics if `id` is out of bound.
+    pub(crate) fn get_report(&self, id: u32) -> &Report {
+        &self.report_ids[id as usize]
     }
 
     /// Total number of reports.
