@@ -5,6 +5,7 @@ use crate::parser::walk_component;
 use crate::parser::{ComponentAlternation, ComponentSequence, ConstComponentVisitor};
 use crate::CompileError;
 use rescan_util::Ue2Literal;
+use std::convert::TryInto;
 use std::pin::Pin;
 
 pub(crate) struct NotLiteral {}
@@ -75,7 +76,7 @@ pub(crate) fn shortcut_literal(
     unsafe {
         ng.as_mut().get_unchecked_mut().add_literal(
             lit,
-            expr.index,
+            expr.index.try_into().unwrap(),
             expr.report,
             expr.highlander,
             expr.som,

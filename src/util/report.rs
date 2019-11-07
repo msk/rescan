@@ -12,3 +12,11 @@ pub(crate) fn make_e_callback(
 ) -> Report {
     Report { min_length: 0 }
 }
+
+pub(crate) fn make_som_relative_callback(
+    _report: u32,
+    _offset_adjust: i32,
+    _distance: u64,
+) -> Report {
+    Report { min_length: 0 }
+}

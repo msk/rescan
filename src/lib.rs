@@ -19,6 +19,7 @@ use nfagraph::Ng;
 pub use rescan_util::ReportId;
 pub use runtime::{scan, Error};
 pub use scratch::Scratch;
+use std::convert::TryInto;
 pub use util::compile_error::{CompileError, ErrorKind};
 use util::CompileContext;
 
@@ -121,7 +122,7 @@ fn compile_multi_int(
 
     for (i, (exp, &fl, &id)) in izip!(expressions, flags, ids).enumerate() {
         if let Err(mut e) = add_expression(&mut ng, i, exp, fl, id) {
-            e.set_expression_index(i);
+            e.set_expression_index(i.try_into().unwrap());
             return Err(e);
         }
     }

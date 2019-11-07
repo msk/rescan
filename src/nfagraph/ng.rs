@@ -1,7 +1,10 @@
 use crate::compiler::ExpressionInfo;
 use crate::nfagraph::NgHolder;
 use crate::rose::RoseBuild;
-use crate::util::{make_e_callback, CompileContext, Depth, ExternalReportInfo, ReportManager};
+use crate::util::{
+    make_e_callback, make_som_relative_callback, CompileContext, Depth, ExternalReportInfo,
+    ReportManager,
+};
 use crate::{CompileError, ErrorKind, SmallWriteBuild, SomType};
 use maplit::hashset;
 use rescan_util::{mixed_sensitivity, Ue2Literal};
@@ -58,7 +61,7 @@ impl<'a> Ng<'a> {
     pub(crate) fn add_literal(
         &mut self,
         literal: &Ue2Literal,
-        expr_index: usize,
+        expr_index: u32,
         external_report: u32,
         highlander: bool,
         som: SomType,
@@ -94,7 +97,14 @@ impl<'a> Ng<'a> {
             self.rm.get_internal_id(&r)
         } else {
             debug_assert!(!highlander); // not allowed, checked earlier.
-            unimplemented!();
+            let r = make_som_relative_callback(
+                external_report,
+                0,
+                literal.len().try_into().expect("literal too long"),
+            );
+            let id = self.rm.get_internal_id(&r);
+            self.rose.has_som = true;
+            id
         }?;
 
         self.rose.add(false, false, literal, &hashset! {id});
@@ -110,6 +120,6 @@ impl<'a> Ng<'a> {
         // Inform small write handler about this literal.
         self.smwr.add_literal(literal, id);
 
-        Ok(false)
+        Ok(true)
     }
 }

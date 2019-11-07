@@ -9,7 +9,7 @@ pub struct CompileError {
     pub(crate) reason: String,
 
     /// The index of the expression referred to.
-    index: Option<usize>,
+    index: Option<u32>,
 }
 
 /// A list specifying categories of compile error.
@@ -34,7 +34,7 @@ impl CompileError {
         }
     }
 
-    pub(crate) fn with_index<T: Into<String>>(index: usize, why: T) -> Self {
+    pub(crate) fn with_index<T: Into<String>>(index: u32, why: T) -> Self {
         Self {
             kind: ErrorKind::Other,
             reason: why.into(),
@@ -42,7 +42,7 @@ impl CompileError {
         }
     }
 
-    pub(crate) fn set_expression_index(&mut self, index: usize) {
+    pub(crate) fn set_expression_index(&mut self, index: u32) {
         debug_assert!(self.index.is_none());
         self.index = Some(index);
     }

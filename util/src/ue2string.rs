@@ -29,6 +29,7 @@ impl Ue2Literal {
         self.s.is_empty()
     }
 
+    #[must_use]
     pub fn any_nocase(&self) -> bool {
         self.nocase.any()
     }
@@ -58,6 +59,16 @@ impl<'a> Iterator for Ue2LiteralIter<'a> {
     }
 }
 
+impl<'a> IntoIterator for &'a Ue2Literal {
+    type Item = Ue2LiteralElem;
+    type IntoIter = Ue2LiteralIter<'a>;
+
+    #[must_use]
+    fn into_iter(self) -> Self::IntoIter {
+        self.iter()
+    }
+}
+
 impl PartialEq for Ue2Literal {
     #[must_use]
     fn eq(&self, other: &Self) -> bool {
@@ -84,9 +95,11 @@ impl PartialOrd for Ue2Literal {
     }
 }
 
-fn mixed_sensitivity_in<T>(it: T) -> bool
+/// Returns `true` iff the range of a literal given cannot be considered
+/// entirely case-sensitive nor entirely case-insensitive.
+pub fn mixed_sensitivity<T>(it: T) -> bool
 where
-    T: Iterator<Item = Ue2LiteralElem>,
+    T: IntoIterator<Item = Ue2LiteralElem>,
 {
     let mut cs = false;
     let mut nc = false;
@@ -101,12 +114,7 @@ where
         }
     }
 
-    nc && cs
-}
-
-#[must_use]
-pub fn mixed_sensitivity(s: &Ue2Literal) -> bool {
-    mixed_sensitivity_in(s.iter())
+    cs && nc
 }
 
 #[cfg(test)]

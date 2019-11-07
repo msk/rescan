@@ -2,15 +2,16 @@ use crate::util::Report;
 use crate::{CompileError, ErrorKind, Grey};
 use rescan_util::{ReportId, S64a};
 use std::collections::{hash_map::Entry, BTreeMap, HashMap};
+use std::convert::TryInto;
 
 #[derive(Clone, Copy)]
 pub(crate) struct ExternalReportInfo {
     pub(crate) highlander: bool,
-    pub(crate) first_pattern_index: usize,
+    pub(crate) first_pattern_index: u32,
 }
 
 impl ExternalReportInfo {
-    pub(crate) fn new(h: bool, fpi: usize) -> Self {
+    pub(crate) fn new(h: bool, fpi: u32) -> Self {
         Self {
             highlander: h,
             first_pattern_index: fpi,
@@ -67,8 +68,7 @@ impl<'a> ReportManager<'a> {
             ));
         }
 
-        #[allow(clippy::cast_possible_truncation)]
-        let size = self.report_ids.len() as u32;
+        let size = self.report_ids.len().try_into().expect("too many reports");
         self.report_ids.push(ir.clone());
         self.report_id_to_internal_map.insert(ir.clone(), size);
         Ok(size)
@@ -138,11 +138,11 @@ impl<'a> ReportManager<'a> {
     ///
     /// Panics if the expression index is larger than `u32::max_value()`.
     pub(crate) fn get_exhaustible_key(&mut self, a: u32) -> u32 {
-        if self.to_exhaustible_key_map.len() > u32::max_value() as usize {
-            panic!("too may expressions");
-        }
-        #[allow(clippy::cast_possible_truncation)]
-        let size = self.to_exhaustible_key_map.len() as u32;
+        let size: u32 = self
+            .to_exhaustible_key_map
+            .len()
+            .try_into()
+            .expect("too many expressions");
         *self.to_exhaustible_key_map.entry(a.into()).or_insert(size)
     }
 }
