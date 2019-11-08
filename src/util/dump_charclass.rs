@@ -1,17 +1,17 @@
 //! Dump code for character classes (expressed as `CharReach` objects).
 
-use crate::CharReach;
+use rescan_util::CharReach;
 use std::fmt::{Error, Write};
 
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum CcOutput {
     /// Unescaped text output
     Text,
-
     /// Escaped DOT label output
     Dot,
 }
 
+// These characters must always be escaped.
 const ESCAPED: [u8; 5] = *b"^-[].";
 const DOT_SINGLE_ESCAPED: [u8; 2] = *br#""'"#;
 
@@ -55,7 +55,7 @@ fn describe_range<W: Write>(f: &mut W, c1: u8, c2: u8, out_type: CcOutput) -> Re
     if c1 == c2 {
         describe_char(f, c1, out_type)
     } else if c2 - c1 < 4 {
-        // Render as individual chars
+        // Render as individual chars.
         let mut c1 = c1;
         loop {
             describe_char(f, c1, out_type)?;
@@ -137,7 +137,7 @@ fn describe_class_int<W: Write>(
     // Approx size of output
     let mut i = 0;
     // One we can break
-    let mut cr = *incr;
+    let mut cr = incr.clone();
 
     // If we can be rendered as a single range, do it.
     if let Some((first, last)) = contiguous_range(&cr) {
