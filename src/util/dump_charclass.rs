@@ -4,7 +4,7 @@ use rescan_util::CharReach;
 use std::fmt::{Error, Write};
 
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub enum CcOutput {
+pub(crate) enum CcOutput {
     /// Unescaped text output
     Text,
     /// Escaped DOT label output
@@ -183,7 +183,7 @@ fn describe_class_int<W: Write>(
     Ok(i)
 }
 
-pub fn describe_class<W: Write>(
+pub(crate) fn describe_class<W: Write>(
     f: &mut W,
     incr: &CharReach,
     max_length: usize,
