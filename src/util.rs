@@ -1,3 +1,4 @@
+mod boundary_reports;
 mod compile_context;
 pub(crate) mod compile_error;
 pub(crate) mod depth;
@@ -6,6 +7,7 @@ mod dump_charclass;
 mod report;
 mod report_manager;
 
+pub(crate) use boundary_reports::BoundaryReports;
 pub(crate) use compile_context::CompileContext;
 pub(crate) use depth::Depth;
 #[cfg(test)]

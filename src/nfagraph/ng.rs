@@ -2,8 +2,8 @@ use crate::compiler::ExpressionInfo;
 use crate::nfagraph::NgHolder;
 use crate::rose::RoseBuild;
 use crate::util::{
-    make_e_callback, make_som_relative_callback, CompileContext, Depth, ExternalReportInfo,
-    ReportManager,
+    make_e_callback, make_som_relative_callback, BoundaryReports, CompileContext, Depth,
+    ExternalReportInfo, ReportManager,
 };
 use crate::{CompileError, ErrorKind, SmallWriteBuild, SomType};
 use maplit::hashset;
@@ -21,6 +21,8 @@ pub(crate) struct Ng<'a> {
     min_width: Depth,
 
     rm: ReportManager<'a>,
+    #[allow(dead_code)]
+    boundary: BoundaryReports,
     pub(crate) cc: &'a CompileContext,
 
     smwr: SmallWriteBuild<'a>,
@@ -37,9 +39,13 @@ impl<'a> Ng<'a> {
         let res = Self {
             min_width: Depth::infinity(),
             rm: ReportManager::new(&cc.grey),
-            cc,
+            boundary: BoundaryReports::default(),
+            cc: &cc,
             smwr: SmallWriteBuild::new(num_patterns, cc),
-            rose: RoseBuild { cc, has_som: false },
+            rose: RoseBuild {
+                cc: &cc,
+                has_som: false,
+            },
             _pin: PhantomPinned,
         };
         let mut boxed = Box::pin(res);

@@ -38,6 +38,10 @@ impl<'a> RoseBuild<'a> {
             Mode::Block
         };
 
-        RoseEngine { mode }
+        let proto = RoseEngine { mode };
+
+        let _dboundary = super::DerivedBoundaryReports {};
+
+        proto
     }
 }

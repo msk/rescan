@@ -2,6 +2,7 @@ use crate::Grey;
 
 /// Structure for describing the compile environment: grey box settings, target
 /// arch, mode flags, etc.
+#[derive(Clone)]
 pub(crate) struct CompileContext {
     pub(crate) streaming: bool,
     pub(crate) vectored: bool,
