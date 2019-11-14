@@ -1,5 +1,5 @@
 use crate::database::{get_bytecode, Database};
-use crate::rose::{rose_block_exec, RoseEngine};
+use crate::rose::{rose_block_exec, RoseEngine, RoseRuntimeImpl};
 use crate::scratch::Scratch;
 
 pub enum Error {
@@ -12,7 +12,11 @@ pub enum Error {
 }
 
 fn raw_block_exec(rose: &RoseEngine) {
-    rose_block_exec(rose)
+    match rose.runtime_impl {
+        RoseRuntimeImpl::FullRose => rose_block_exec(rose),
+        RoseRuntimeImpl::PureLiteral => unimplemented!(),
+        RoseRuntimeImpl::SingleOutfix => unimplemented!(),
+    }
 }
 
 pub fn scan(db: &Database, _data: &[u8], _scratch: &mut Scratch) -> Result<(), Error> {

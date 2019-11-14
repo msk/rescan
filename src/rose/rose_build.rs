@@ -1,3 +1,4 @@
+use super::rose_build_bytecode::{pick_runtime_impl, BuildContext};
 use crate::rose::RoseEngine;
 use crate::util::CompileContext;
 use crate::Mode;
@@ -38,10 +39,13 @@ impl<'a> RoseBuild<'a> {
             Mode::Block
         };
 
-        let proto = RoseEngine { mode };
-
         let _dboundary = super::DerivedBoundaryReports {};
 
-        proto
+        let bc = BuildContext::default();
+
+        RoseEngine {
+            runtime_impl: pick_runtime_impl(self, &bc.resources),
+            mode,
+        }
     }
 }
