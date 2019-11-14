@@ -11,18 +11,27 @@ pub enum Error {
     Unknown,
 }
 
-fn raw_block_exec(rose: &RoseEngine) {
-    match rose.runtime_impl {
-        RoseRuntimeImpl::FullRose => rose_block_exec(rose),
-        RoseRuntimeImpl::PureLiteral => unimplemented!(),
-        RoseRuntimeImpl::SingleOutfix => unimplemented!(),
-    }
+/// Initializes SOM state. Used in both block and streaming mode.
+fn init_som_state(_rose: &RoseEngine, _state: *mut u8) {}
+
+fn raw_block_exec(rose: &RoseEngine, scratch: &mut Scratch) {
+    init_som_state(rose, scratch.core_info.state);
+
+    rose_block_exec(rose);
 }
 
-pub fn scan(db: &Database, _data: &[u8], _scratch: &mut Scratch) -> Result<(), Error> {
+fn pure_literal_block_exec(_rose: &RoseEngine, _scratch: &mut Scratch) {}
+
+fn single_outfix_block_exec(_rose: &RoseEngine, _scratch: &mut Scratch) {}
+
+pub fn scan(db: &Database, _data: &[u8], scratch: &mut Scratch) -> Result<(), Error> {
     let rose = get_bytecode(db);
 
-    raw_block_exec(rose);
+    match rose.runtime_impl {
+        RoseRuntimeImpl::FullRose => raw_block_exec(rose, scratch),
+        RoseRuntimeImpl::PureLiteral => pure_literal_block_exec(rose, scratch),
+        RoseRuntimeImpl::SingleOutfix => single_outfix_block_exec(rose, scratch),
+    }
 
     Ok(())
 }
