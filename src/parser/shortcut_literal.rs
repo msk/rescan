@@ -3,8 +3,8 @@ use crate::compiler::ParsedExpression;
 use crate::nfagraph::Ng;
 use crate::parser::walk_component;
 use crate::parser::{ComponentAlternation, ComponentSequence, ConstComponentVisitor};
+use crate::util::Ue2Literal;
 use crate::CompileError;
-use rescan_util::Ue2Literal;
 use std::convert::TryInto;
 use std::pin::Pin;
 

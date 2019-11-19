@@ -1,6 +1,6 @@
 //! Dump code for character classes (expressed as `CharReach` objects).
 
-use rescan_util::CharReach;
+use crate::util::CharReach;
 use std::fmt::{Error, Write};
 
 #[derive(Clone, Copy, Debug, PartialEq)]

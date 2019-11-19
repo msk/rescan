@@ -2,11 +2,10 @@
 
 use crate::compiler::ExpressionInfo;
 use crate::nfagraph::NgHolder;
-use crate::util::{CompileContext, ReportManager};
+use crate::util::{CompileContext, ReportId, ReportManager, Ue2Literal};
 use crate::SomType;
 use petgraph::graph::{DefaultIx, NodeIndex};
 use petgraph::{Direction, Graph};
-use rescan_util::{ReportId, Ue2Literal};
 use std::collections::HashSet;
 use std::ptr::NonNull;
 

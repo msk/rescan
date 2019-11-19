@@ -1,4 +1,4 @@
-use rescan_util::ReportId;
+use crate::util::ReportId;
 use std::collections::HashSet;
 
 #[derive(Default)]

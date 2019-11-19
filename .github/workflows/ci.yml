@@ -32,7 +32,7 @@ jobs:
         make install DESTDIR=../../kcov-build
         cd ../..
         rm -rf kcov-master
-        for file in target/debug/rescan-* target/debug/rescan_util-*; do [ -x "${file}" ] || continue; mkdir -p "target/cov/$(basename $file)"; ./kcov-build/usr/local/bin/kcov --exclude-pattern=/.cargo,/usr/lib --verify "target/cov/$(basename $file)" "$file"; done
+        for file in target/debug/rescan-*; do [ -x "${file}" ] || continue; mkdir -p "target/cov/$(basename $file)"; ./kcov-build/usr/local/bin/kcov --exclude-pattern=/.cargo,/usr/lib --verify "target/cov/$(basename $file)" "$file"; done
     - name: Upload coverage to Codecov
       if: matrix.os == 'ubuntu-latest' && matrix.rust == 'stable'
       uses: codecov/codecov-action@master

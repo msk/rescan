@@ -1,6 +1,5 @@
-use crate::util::Report;
+use crate::util::{Report, ReportId, S64a};
 use crate::{CompileError, ErrorKind, Grey};
-use rescan_util::{ReportId, S64a};
 use std::collections::{hash_map::Entry, BTreeMap, HashMap};
 use std::convert::TryInto;
 

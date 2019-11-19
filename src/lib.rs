@@ -16,12 +16,11 @@ pub use database::Database;
 use grey::Grey;
 use itertools::izip;
 use nfagraph::Ng;
-pub use rescan_util::ReportId;
 pub use runtime::{scan, Error};
 pub use scratch::Scratch;
 use std::convert::TryInto;
 pub use util::compile_error::{CompileError, ErrorKind};
-use util::CompileContext;
+use util::{CompileContext, ReportId};
 
 pub(crate) use smallwrite::SmallWriteBuild;
 pub(crate) use som::SomType;

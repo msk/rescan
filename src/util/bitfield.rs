@@ -1,4 +1,4 @@
-use crate::round_up_n;
+use super::ue2common::round_up_n;
 use std::ops::{BitAnd, BitAndAssign, BitOr, BitOrAssign, BitXor, BitXorAssign, Not};
 
 const BLOCK_SIZE: u8 = 64; // size_of::<BlockType>() * 8;
@@ -109,11 +109,14 @@ impl BitField256 {
     }
 
     /// Retruns `true` if any bit is set.
+    #[allow(dead_code)]
     pub(crate) fn any(&self) -> bool {
         !self.none()
     }
 
     /// Returns `true` if all bits are set.
+    #[allow(dead_code)]
+    #[allow(dead_code)]
     pub(crate) fn all(&self) -> bool {
         self.bits[0] == ALL_ONES
             && self.bits[1] == ALL_ONES
@@ -133,6 +136,7 @@ impl BitField256 {
     }
 
     /// Returns last bit set.
+    #[allow(dead_code)]
     pub(crate) fn find_last(&self) -> Option<u8> {
         for (i, &bits) in self.bits.iter().enumerate().rev() {
             if bits != 0 {
@@ -169,6 +173,7 @@ impl BitField256 {
     }
 
     /// Returns (zero-based) `n`-th bit set.
+    #[allow(dead_code)]
     pub(crate) fn find_nth(&self, n: u8) -> Option<u8> {
         let mut sum = 0;
         for (i, &bits) in self.bits.iter().enumerate() {

@@ -1,5 +1,5 @@
 use crate::parser::*;
-use rescan_util::{make_caseless, CharReach};
+use crate::util::{make_caseless, CharReach};
 
 /// Character classes and their mnemonics.
 #[derive(Debug)]

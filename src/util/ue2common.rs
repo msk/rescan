@@ -8,6 +8,7 @@ pub type S64a = i64;
 pub type ReportId = u32;
 
 /// Aligns to the next 16-byte boundary.
+#[allow(dead_code)]
 #[inline]
 pub fn round_up_16<T>(a: T) -> T
 where
@@ -19,6 +20,7 @@ where
 }
 
 /// Aligns to the previous 16-byte boundary.
+#[allow(dead_code)]
 #[inline]
 pub fn round_down_16<T>(a: T) -> T
 where
@@ -40,6 +42,7 @@ where
 }
 
 /// Aligns to the previous n-byte boundary.
+#[allow(dead_code)]
 #[inline]
 pub fn round_down_n<T>(a: T, n: u8) -> T
 where
@@ -50,6 +53,7 @@ where
 }
 
 /// Aligns to a cache line.
+#[allow(dead_code)]
 #[inline]
 pub fn round_up_cache_line<T>(a: T) -> T
 where

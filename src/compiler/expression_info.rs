@@ -1,5 +1,5 @@
+use crate::util::ReportId;
 use crate::SomType;
-use rescan_util::ReportId;
 
 /// Properties of an expression.
 #[derive(Clone)]

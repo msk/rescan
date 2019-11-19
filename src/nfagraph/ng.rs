@@ -5,9 +5,9 @@ use crate::util::{
     make_e_callback, make_som_relative_callback, BoundaryReports, CompileContext, Depth,
     ExternalReportInfo, ReportManager,
 };
+use crate::util::{mixed_sensitivity, Ue2Literal};
 use crate::{CompileError, ErrorKind, SmallWriteBuild, SomType};
 use maplit::hashset;
-use rescan_util::{mixed_sensitivity, Ue2Literal};
 use std::cmp::min;
 use std::convert::TryInto;
 use std::marker::PhantomPinned;

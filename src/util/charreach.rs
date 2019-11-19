@@ -1,4 +1,6 @@
-use crate::{mytolower, mytoupper, ourisalpha, BitField256, UTF_CONT_MAX};
+use super::bitfield::BitField256;
+use super::compare::{mytolower, mytoupper, ourisalpha};
+use super::unicode_def::UTF_CONT_MAX;
 use std::fmt;
 use std::ops::{BitAnd, BitAndAssign, BitOr, BitOrAssign, BitXor, BitXorAssign, Not};
 
@@ -7,7 +9,7 @@ use std::ops::{BitAnd, BitAndAssign, BitOr, BitOrAssign, BitXor, BitXorAssign, N
 /// This is a simple (but hopefully fast) struct for representing 8-bit
 /// character reachability, along with a bunch of useful operations.
 #[derive(Copy, Clone, Debug, Default, Eq, Hash, PartialEq, PartialOrd, Ord)]
-pub struct CharReach {
+pub(crate) struct CharReach {
     /// Underlying storage.
     bits: BitField256,
 }
@@ -15,7 +17,7 @@ pub struct CharReach {
 impl CharReach {
     /// Constructs a character class containing a single 8-bit character.
     #[must_use]
-    pub fn from_char(c: u8) -> Self {
+    pub(crate) fn from_char(c: u8) -> Self {
         let mut cr = Self::default();
         cr.set(c);
         cr
@@ -27,60 +29,67 @@ impl CharReach {
     /// # Panics
     ///
     /// Panics if `from > to`.
+    #[allow(dead_code)]
     #[must_use]
-    pub fn from_range(from: u8, to: u8) -> Self {
+    pub(crate) fn from_range(from: u8, to: u8) -> Self {
         let mut cr = Self::default();
         cr.set_range(from, to);
         cr
     }
 
     /// Constructs a character class based on the set of chars in a byte slice.
+    #[allow(dead_code)]
     #[must_use]
-    pub fn from_bytes(bytes: &[u8]) -> Self {
+    pub(crate) fn from_bytes(bytes: &[u8]) -> Self {
         let mut cr = Self::default();
         cr.set_bytes(bytes);
         cr
     }
 
     /// Constructs a character class with complete reachability (a "dot").
+    #[allow(dead_code)]
     #[must_use]
-    pub fn dot() -> Self {
+    pub(crate) fn dot() -> Self {
         Self::from_range(0, 255)
     }
 
     /// Resets all bits.
-    pub fn reset_all(&mut self) {
+    #[allow(dead_code)]
+    pub(crate) fn reset_all(&mut self) {
         self.bits.reset_all();
     }
 
     /// Sets all bits.
-    pub fn set_all(&mut self) {
+    pub(crate) fn set_all(&mut self) {
         self.bits.set_all();
     }
 
     /// Resets bit for `c`.
-    pub fn reset(&mut self, c: u8) {
+    #[allow(dead_code)]
+    pub(crate) fn reset(&mut self, c: u8) {
         self.bits.reset(c);
     }
 
     /// Sets bit for `c`.
-    pub fn set(&mut self, c: u8) {
+    pub(crate) fn set(&mut self, c: u8) {
         self.bits.set(c);
     }
 
     /// Tests bit for `c`.
     #[must_use]
-    pub fn test(&self, c: u8) -> bool {
+    pub(crate) fn test(&self, c: u8) -> bool {
         self.bits.test(c)
     }
 
     /// Flips all bits.
-    pub fn flip_all(&mut self) {
+    #[allow(dead_code)]
+    pub(crate) fn flip_all(&mut self) {
         self.bits.flip_all();
     }
 
     /// Flips bit for `c`.
-    pub fn flip(&mut self, c: u8) {
+    #[allow(dead_code)]
+    pub(crate) fn flip(&mut self, c: u8) {
         self.bits.flip(c);
     }
 
@@ -89,12 +98,12 @@ impl CharReach {
     /// # Panics
     ///
     /// Panics if `from > to`.
-    pub fn set_range(&mut self, from: u8, to: u8) {
+    pub(crate) fn set_range(&mut self, from: u8, to: u8) {
         self.bits.set_range(from, to)
     }
 
     /// Switches on the bits corresponding to the characters in `bytes`.
-    pub fn set_bytes(&mut self, bytes: &[u8]) {
+    pub(crate) fn set_bytes(&mut self, bytes: &[u8]) {
         for &b in bytes {
             self.set(b);
         }
@@ -102,55 +111,61 @@ impl CharReach {
 
     /// Returns number of bits set on.
     #[must_use]
-    pub fn count(&self) -> u32 {
+    pub(crate) fn count(&self) -> u32 {
         self.bits.count()
     }
 
     /// Returns `true` if no bit is set.
+    #[allow(dead_code)]
     #[must_use]
-    pub fn none(&self) -> bool {
+    pub(crate) fn none(&self) -> bool {
         self.bits.none()
     }
 
     /// Retruns `true` if any bit is set.
+    #[allow(dead_code)]
     #[must_use]
-    pub fn any(&self) -> bool {
+    pub(crate) fn any(&self) -> bool {
         self.bits.any()
     }
 
     /// Returns `true` if all bits are set.
+    #[allow(dead_code)]
     #[must_use]
-    pub fn all(&self) -> bool {
+    pub(crate) fn all(&self) -> bool {
         self.bits.all()
     }
 
     /// Returns first bit set.
     #[must_use]
-    pub fn find_first(&self) -> Option<u8> {
+    pub(crate) fn find_first(&self) -> Option<u8> {
         self.bits.find_first()
     }
 
     /// Returns last bit set.
+    #[allow(dead_code)]
     #[must_use]
-    pub fn find_last(&self) -> Option<u8> {
+    pub(crate) fn find_last(&self) -> Option<u8> {
         self.bits.find_last()
     }
 
     /// Returns next bit set
     #[must_use]
-    pub fn find_next(&self, last: u8) -> Option<u8> {
+    pub(crate) fn find_next(&self, last: u8) -> Option<u8> {
         self.bits.find_next(last)
     }
 
     /// Returns (zero-based) `n`-th bit set.
+    #[allow(dead_code)]
     #[must_use]
-    pub fn find_nth(&self, n: u8) -> Option<u8> {
+    pub(crate) fn find_nth(&self, n: u8) -> Option<u8> {
         self.bits.find_nth(n)
     }
 
     /// Checks if this only contain bits representing alphabet characters.
+    #[allow(dead_code)]
     #[must_use]
-    pub fn is_alphabetic(&self) -> bool {
+    pub(crate) fn is_alphabetic(&self) -> bool {
         if self.none() {
             return false;
         }
@@ -166,7 +181,7 @@ impl CharReach {
 
     /// Checks if this represents an uppercase/lowercase pair.
     #[must_use]
-    pub fn is_caseless_char(&self) -> bool {
+    pub(crate) fn is_caseless_char(&self) -> bool {
         if self.count() != 2 {
             return false;
         }
@@ -176,8 +191,9 @@ impl CharReach {
     }
 
     /// Checks if this represents a cheapskate caseless set.
+    #[allow(dead_code)]
     #[must_use]
-    pub fn is_bit5_insensitive(&self) -> bool {
+    pub(crate) fn is_bit5_insensitive(&self) -> bool {
         let mut next = self.find_first();
         while let Some(pos) = next {
             if !self.test(pos ^ 0x20) {
@@ -189,27 +205,31 @@ impl CharReach {
     }
 
     /// Checks if this character class is a subset of `rhs`.
+    #[allow(dead_code)]
     #[must_use]
-    pub fn is_subset_of(&self, rhs: &Self) -> bool {
+    pub(crate) fn is_subset_of(&self, rhs: &Self) -> bool {
         (self.bits & rhs.bits) == self.bits
     }
 
     /// Checks if there is a non-empty intersection between this and `rhs`.
+    #[allow(dead_code)]
     #[must_use]
-    pub fn overlaps(&self, rhs: &Self) -> bool {
+    pub(crate) fn overlaps(&self, rhs: &Self) -> bool {
         (*self & *rhs).any()
     }
 
     /// Checks if this character class is within the ASCII range.
+    #[allow(dead_code)]
     #[must_use]
-    pub fn is_ascii(&self) -> bool {
+    pub(crate) fn is_ascii(&self) -> bool {
         (*self & !Self::from_range(0x00, 0x7f)).none()
     }
 
     /// Check is this character class represents the first bytes of multi-byte
     /// UTF-8 characters.
+    #[allow(dead_code)]
     #[must_use]
-    pub fn is_utf8_start(&self) -> bool {
+    pub(crate) fn is_utf8_start(&self) -> bool {
         (*self & Self::from_range(0x00, UTF_CONT_MAX)).none()
     }
 }
@@ -294,7 +314,7 @@ impl Not for CharReach {
     }
 }
 
-pub fn make_caseless(cr: &mut CharReach) {
+pub(crate) fn make_caseless(cr: &mut CharReach) {
     for c in b'A'..=b'Z' {
         if cr.test(c) || cr.test(mytolower(c)) {
             cr.set(c);
@@ -308,7 +328,8 @@ pub fn make_caseless(cr: &mut CharReach) {
 /// # Panics
 ///
 /// Panics if `bits` has less than 32 elements.
-pub fn fill_bitvector(cr: &CharReach, bits: &mut [u8]) {
+#[allow(dead_code)]
+pub(crate) fn fill_bitvector(cr: &CharReach, bits: &mut [u8]) {
     for b in bits[0..32].iter_mut() {
         *b = 0;
     }
@@ -325,8 +346,9 @@ pub fn fill_bitvector(cr: &CharReach, bits: &mut [u8]) {
 /// `(and_mask, cmp_mask)` is the return value of this function.
 ///
 /// Note: characters not in `cr` may also pass the and/cmp checks.
+#[allow(dead_code)]
 #[must_use]
-pub fn make_and_cmp_mask(cr: &CharReach) -> (u8, u8) {
+pub(crate) fn make_and_cmp_mask(cr: &CharReach) -> (u8, u8) {
     let mut lo = 0xff;
     let mut hi = 0x00;
 

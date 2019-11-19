@@ -1,8 +1,7 @@
 use super::rose_build_bytecode::{pick_runtime_impl, BuildContext};
 use crate::rose::RoseEngine;
-use crate::util::CompileContext;
+use crate::util::{CompileContext, ReportId, Ue2Literal};
 use crate::Mode;
-use rescan_util::{ReportId, Ue2Literal};
 use std::collections::HashSet;
 
 pub(crate) struct RoseBuild<'a> {

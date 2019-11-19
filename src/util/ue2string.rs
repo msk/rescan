@@ -1,4 +1,4 @@
-use crate::{mytoupper, ourisalpha};
+use super::compare::{mytoupper, ourisalpha};
 use bit_vec::BitVec;
 use std::cmp::Ordering;
 

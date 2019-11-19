@@ -1,7 +1,7 @@
 use crate::parser::PosFlags;
+use crate::util::{CharReach, ReportId};
 use petgraph::graph::{DefaultIx, NodeIndex};
 use petgraph::{Direction, Graph};
-use rescan_util::{CharReach, ReportId};
 use std::collections::HashSet;
 use std::ops::{Index, IndexMut};
 
