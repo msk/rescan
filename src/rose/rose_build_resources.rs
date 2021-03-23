@@ -3,6 +3,7 @@
 ///
 /// We use this to control how much initialisation we need to do at the
 /// beginning of a stream/block at runtime.
+#[allow(clippy::struct_excessive_bools)]
 #[derive(Default)]
 pub(super) struct RoseResources {
     pub(super) has_outfixes: bool,

@@ -2,6 +2,7 @@ use crate::util::ReportId;
 use crate::SomType;
 
 /// Properties of an expression.
+#[allow(clippy::struct_excessive_bools)]
 #[derive(Clone)]
 pub(crate) struct ExpressionInfo {
     /// Index of the expression represented by this graph.

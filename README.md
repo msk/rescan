@@ -12,7 +12,7 @@ welcome!
 
 ## Requirements
 
-REscan requires Rust version 1.37 or greater.
+REscan requires Rust version 1.42 or greater.
 
 ## License
 

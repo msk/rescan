@@ -24,6 +24,11 @@ fn pure_literal_block_exec(_rose: &RoseEngine, _scratch: &mut Scratch) {}
 
 fn single_outfix_block_exec(_rose: &RoseEngine, _scratch: &mut Scratch) {}
 
+/// Performs pattern matching against the pattern database.
+///
+/// # Errors
+///
+/// Currently this function never returns an error.
 pub fn scan(db: &Database, _data: &[u8], scratch: &mut Scratch) -> Result<(), Error> {
     let rose = get_bytecode(db);
 

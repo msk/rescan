@@ -97,7 +97,7 @@ impl<'a> SmallWriteBuild<'a> {
         }
     }
 
-    #[allow(clippy::block_in_if_condition_stmt)]
+    #[allow(clippy::blocks_in_if_conditions)]
     #[allow(dead_code)]
     pub(crate) fn add_expression(&mut self, g: &NgHolder, expr: &ExpressionInfo) {
         // If the graph is poisoned (i.e. we can't build a SmallWrite version),

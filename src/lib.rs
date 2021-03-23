@@ -43,17 +43,11 @@ pub enum Mode {
 
 impl Mode {
     fn is_streaming(&self) -> bool {
-        match self {
-            Self::Stream(_) | Self::Vectored => true,
-            _ => false,
-        }
+        matches!(self, Self::Stream(_) | Self::Vectored)
     }
 
     fn is_vectored(&self) -> bool {
-        match self {
-            Self::Vectored => true,
-            _ => false,
-        }
+        matches!(self, Self::Vectored)
     }
 
     /// Returns the number of bytes of SOM precision.
@@ -77,11 +71,19 @@ pub enum SomHorizon {
 }
 
 /// Compiles a regular expression.
+///
+/// # Errors
+///
+/// Returns an error if the expression is invalid.
 pub fn compile(expression: &str, flags: Flags, mode: &Mode) -> Result<Database, CompileError> {
     compile_multi_int(&[expression], &[flags], &[0], mode, &Grey::default())
 }
 
 /// Compiles multiple regular expressions.
+///
+/// # Errors
+///
+/// Returns an error if any expression is invalid.
 pub fn compile_multi(
     expressions: &[&str],
     flags: &[Flags],

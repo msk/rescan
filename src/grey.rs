@@ -1,3 +1,4 @@
+#[allow(clippy::struct_excessive_bools)]
 #[derive(Clone)]
 pub(crate) struct Grey {
     pub(crate) allow_literal: bool,

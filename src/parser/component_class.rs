@@ -12,8 +12,10 @@ pub(in crate::parser) fn get_literal_component_class(
     c: char,
     nocase: bool,
 ) -> Result<ComponentClass, CompileError> {
-    let mut mode = ParseMode::default();
-    mode.caseless = nocase;
+    let mode = ParseMode {
+        caseless: nocase,
+        ..ParseMode::default()
+    };
     let mut cc = get_component_class(mode);
     cc.add(c)?;
     Ok(cc)

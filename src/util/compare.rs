@@ -1,9 +1,9 @@
 pub fn myisupper(c: u8) -> bool {
-    (c >= b'A') && (c <= b'Z')
+    (b'A'..=b'Z').contains(&c)
 }
 
 pub fn myislower(c: u8) -> bool {
-    (c >= b'a') && (c <= b'z')
+    (b'a'..=b'z').contains(&c)
 }
 
 #[must_use]

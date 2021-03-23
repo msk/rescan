@@ -1,5 +1,6 @@
 use crate::Flags;
 
+#[allow(clippy::struct_excessive_bools)]
 #[derive(Clone, Copy, Debug, Default)]
 pub(crate) struct ParseMode {
     pub(crate) caseless: bool,
