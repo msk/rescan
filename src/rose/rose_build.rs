@@ -10,6 +10,7 @@ pub(crate) struct RoseBuild<'a> {
 }
 
 impl<'a> RoseBuild<'a> {
+    #[allow(clippy::needless_return)]
     pub(crate) fn add(
         &mut self,
         _anchored: bool,
