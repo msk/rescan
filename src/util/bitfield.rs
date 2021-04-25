@@ -580,7 +580,7 @@ mod tests {
             a.set_range(i as u8, (i + PART) as u8);
 
             for j in i..=i + PART {
-                assert!(a.test(j as u8), format!("bit {} should be on", j));
+                assert!(a.test(j as u8), "bit {} should be on", j);
             }
 
             assert_eq!(
